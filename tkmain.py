@@ -1,4 +1,4 @@
-import socket,_thread,time,sys
+import socket,threading,time,sys
 
 class net:
     def __init__(self,ip,window):
@@ -11,13 +11,13 @@ class net:
         self.data = (window.nameentry.get()+',' + str(self.addr[0]) + ',' + str(self.addr[1])).encode()
         time.sleep(0.5)
         self.target = (ip,self.port)
-        _thread.start_new_thread(self.server,())
+        threading.Thread(target=self.server,args=()).start()
     def server(self):
         self.s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         self.s.bind(self.addr)
         print(self.addr)
         #addr = ip,self.window.portentry.get()
-        _thread.start_new_thread(self.test,())
+        threading.Thread(target=self.test,args=()).start()
         self.data , self.target = self.s.recvfrom(1024)
         self.mode = False
         self._print('已連接')
@@ -41,9 +41,9 @@ class net:
         if self.mode:
             print('準備連接'+str(self.target))
             x = 0
-            while self.mode and x <= 1000:
+            while self.mode and x <= 5:
                 self.s.sendto(self.data,self.target)
-                time.sleep(0.2)
+                #time.sleep(2)
                 x+=1
             if self.mode:
                 self._print('連線失敗')

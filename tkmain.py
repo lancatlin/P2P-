@@ -5,9 +5,7 @@ class net:
         self.window = window
         #暫時測試用
         self.port = 40000
-        HOST, PORT = socket.gethostname(), self.port
-        HOST = socket.gethostbyname(HOST)
-        self.addr =  (self.window.ip, self.port)
+        self.addr =  (self.get_LAN(), self.port)
         self.mode = True
         self.data = (window.nameentry.get()+',' + str(self.addr[0]) + ',' + str(self.addr[1])).encode('UTF-8')
         time.sleep(0.5)
@@ -54,3 +52,7 @@ class net:
     def _print(self,s):
         string = str(s)
         self.window._print_(string)
+    def get_LAN(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8",80))
+        return s.getsockname()[0]

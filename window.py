@@ -4,10 +4,6 @@ import threading,tkmain,time,platform,socket
 class window(Tk):
     def __init__(self):
         super().__init__()
-        if platform.system() == 'Linux':
-            self.ip = '192.168.1.'+input('輸入本地ip')
-        else:
-            self.ip = socket.gethostname()
         self.title('P2P Talking')
         self.geometry('350x650')
         rows = 1

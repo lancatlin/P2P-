@@ -1,10 +1,13 @@
 from tkinter import *
-import threading,tkmain,time
+import threading,tkmain,time,platform,socket
 
 class window(Tk):
     def __init__(self):
         super().__init__()
-        self.ip = '192.168.1.'+input('輸入本地ip')
+        if platform.system() == 'Linux':
+            self.ip = '192.168.1.'+input('輸入本地ip')
+        else:
+            self.ip = socket.gethostname()
         self.title('P2P Talking')
         self.geometry('350x650')
         rows = 1
@@ -52,7 +55,7 @@ class window(Tk):
         message.grid(row=rows, columnspan=5, sticky=N, pady=15)
         self.mainloop()
     def setIp(self):
-        ip = '192.168.1.'+self.ipentry.get()
+        ip = self.ipentry.get()
         self._print_('準備連接:'+ip)
         self.net = tkmain.net(ip,self)
         '''start = threading.Thread(target = self.net.server(),args=())

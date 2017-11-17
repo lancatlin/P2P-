@@ -3,12 +3,13 @@ import socket,threading,time,sys
 class net:
     def __init__(self,ip,window):
         self.window = window
-        self.port = int(self.window.portentry.get())
+        #暫時測試用
+        self.port = 40000
         HOST, PORT = socket.gethostname(), self.port
         HOST = socket.gethostbyname(HOST)
-        self.addr = ('192.168.1.9', self.port)
+        self.addr =  (self.window.ip, self.port)
         self.mode = True
-        self.data = (window.nameentry.get()+',' + str(self.addr[0]) + ',' + str(self.addr[1])).encode()
+        self.data = (window.nameentry.get()+',' + str(self.addr[0]) + ',' + str(self.addr[1])).encode('UTF-8')
         time.sleep(0.5)
         self.target = (ip,self.port)
         threading.Thread(target=self.server,args=()).start()
@@ -18,11 +19,11 @@ class net:
         print(self.addr)
         #addr = ip,self.window.portentry.get()
         threading.Thread(target=self.test,args=()).start()
-        self.data , self.target = self.s.recvfrom(1024)
+        data , self.target = self.s.recvfrom(1024)
         self.mode = False
         self._print('已連接')
-        print(self.data)
-        self.s.sendto(self.data.encode('UTF-8'),self.target)
+        print(data)
+        self.s.sendto(self.data,self.target)
         while True:
             data,addr = self.s.recvfrom(1024)
             data = data.decode('UTF-8')
@@ -34,8 +35,8 @@ class net:
         self.window.add_new('<You>'+data)
         if self.data == 'end':
             sys.exit()
-        self.data = '<'+self.window.nameentry.get()+'>'+data
-        self.data=self.data.encode('UTF-8')
+        data = '<'+self.window.nameentry.get()+'>'+data
+        data=data.encode('UTF-8')
         self.s.sendto(data,self.target)
     def test(self):
         if self.mode:

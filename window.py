@@ -5,7 +5,7 @@ class window(Tk):
     def __init__(self):
         super().__init__()
         self.title('P2P Talking')
-        self.geometry('350x650')
+        self.geometry('350x700')
         rows = 1
 
         f1 = Frame(self)

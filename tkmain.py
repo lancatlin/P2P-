@@ -7,7 +7,7 @@ class net:
         self.port = 40000
         self.addr =  (self.get_LAN(), self.port)
         self.mode = True
-        self.data = (window.nameentry.get()+',' + str(self.addr[0]) + ',' + str(self.addr[1])).encode('UTF-8')
+        self.message = (window.nameentry.get()+',' + str(self.addr[0]) + ',' + str(self.addr[1])).encode('UTF-8')
         time.sleep(0.5)
         self.target = (ip,self.port)
         threading.Thread(target=self.server,args=()).start()
@@ -21,7 +21,7 @@ class net:
         self.mode = False
         self._print('已連接')
         print(data)
-        self.s.sendto(self.data,self.target)
+        self.s.sendto(self.message,self.target)
         while True:
             data,addr = self.s.recvfrom(1024)
             data = data.decode('UTF-8')
@@ -31,7 +31,7 @@ class net:
         now = time.strftime("[%H-%M]")
         data=now+string
         self.window.add_new('<You>'+data)
-        if self.data == 'end':
+        if data == 'end':
             sys.exit()
         data = '<'+self.window.nameentry.get()+'>'+data
         data=data.encode('UTF-8')
@@ -41,8 +41,8 @@ class net:
             print('準備連接'+str(self.target))
             x = 0
             while self.mode and x <= 500:
-                self.s.sendto(self.data,self.target)
-                time.sleep(2)
+                self.s.sendto(self.message,self.target)
+                time.sleep(5)
                 x+=1
             if self.mode:
                 self._print('連線失敗')

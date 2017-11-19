@@ -10,7 +10,9 @@ class net:
         self.message = (window.nameentry.get()+',' + str(self.addr[0]) + ',' + str(self.addr[1])).encode('UTF-8')
         time.sleep(0.5)
         self.target = (ip,self.port)
-        threading.Thread(target=self.server,args=()).start()
+        ser = threading.Thread(target=self.server)
+        ser.setDaemon(True)
+        ser.start()
     def server(self):
         self.s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         self.s.bind(self.addr)

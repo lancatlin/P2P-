@@ -1,6 +1,6 @@
+#-*- coding: utf-8 -*-
 from tkinter import *
-
-from Server_env import tkmain
+import tkmain
 
 
 class window(Tk):

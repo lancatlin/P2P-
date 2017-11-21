@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "p2p-talking",
+  "private_key_id": "af190331c9a65addd056dd3d115d897a10af9d84",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDXeN0WHHo7BRL8\nOQpFvj2mHKC8m+MvLdQsF146+kZtK3Q09bJgXjN6BYAHSDODAmaUlD3DuHRDHOO2\nyhl93RhKnVnx6VItCXPhpeyl/nOkUWTHLqxGvparYsQlcN+5+8+MSQO09Azvz7c0\nc/3ULomqgF/MnX9oMmtibK2eLRVowT/mzQOh6eSqexJqJQz4Ssr+OGEMHSUVKu8v\nUBvJPX77DqJyri8mU/d/Clxc1ICf9oQKl5dT4hX0fl5M1cSvWbPGxmUzfT+pac9t\nkE/7ZoaA5bw1QvlKdMBX0ndns6lD0R7wKYtD4zuPoUPxU8oAQgq57feNxWHiLwHZ\nLQZ311JZAgMBAAECggEAAJhX2/jGKaWQ8NtjeN/Wob/QfdTcYsP4owqJexY33ZNS\nJddL39JCyCJ9wQdlBQabq+tg5Ep9H7ZTtqyGN3/F0mbu2akwTemJxWTE64xxW1HS\nOm6ZkTRzjBOgwQ23wHa+kv+coAJQitUDB4UOfWiHfs4N9a21rV7+Ru5P6HDtbzWg\nH4cFyasbgk06c/b3s2Rh6PT768ezWXxNu2jP399DHbrAPoU8DZMvuXPnwGWNMCi4\nK9BJLJDWQTRYLmp8uFM/oY5VeYLaq0HZaXgZ50EzrhubQzZFJ0Dp5eShvZtz9f+8\n3IsLOM6JeqlvjmnRz/MzPyy/Y5mftI254eNmtLWoUQKBgQD89xAnxaDFH2++/NOH\n3jy4B7R6YaR1ZaW0B2WR9BzZaKLGj9g2vyomziLh3BYP6QdJviGFS+O03+DEMH2r\nij1YtsQI3dvdNbRnwb2xOHbj2c3tvmRAM7CiKZyNYDfFPOISNj9zLA7AMkTmQtUt\nV0RikH1KGJLMZ/kv6FbikUT6JQKBgQDaDqXIfxX0iJZH1s0K9SnvH66BKkyoWbwV\nX7iiUtALawHRmgapd8wLMLiD+fNb6JFpohdTTUguGtcLmUbu+rlpe4zs0aEhO9C+\n6VQ3Am8FOF4AOUyG2HB0uuXQO4qlJ+PuoJb6mkriVP61lesy6J6duyCs900GYCQ7\nJi5noisPJQKBgEPiPSifJUSg6gjzqgRVBDBSiQEqgMqsS2pjbcNcIf3J0Zy9b0VJ\nyZL+UGgR+q2sWDNW3YH62pFoXtXnOWI2R74t1a+XcfAMAGyzlicfwu/kPBnntNlx\nxZ3O0t8xieXZL8W5Xw+WLCMxmkG8f56aQ5S7t5ORwpst77YGgIJuf3ctAoGAfpdo\nWXimJ1uwWy5xxT3FRYSQC36iGE5YKdRzXRFUpHxQBv4zhej9dTWouT2/sYjX+opW\nnk7Ma6+7TomCq7S1NW67xrSApcmTC3JsKK9qAo7Ry7F4IwS+bJYgWv5mJDF/Wwax\n//TZKoKLiKHrdJellg6QDrpXZi8keY5V/GYiN10CgYEA7Y4b21DDj8GYxouUaTZE\n19Vujd0x1wYA8uIgHWdIFHbWiKtP2OJZgx9Cxa3v5pJVsFU8lVtQnPAKWmb05oFl\nF9DyNOtaEw3DZjOVoBUuFtCcE6bQmeNHs40UU6UmPIOw7nALWEbkyPPms655YWFR\nJAlwmjIIQMI6ypNMeyOa8Ws=\n-----END PRIVATE KEY-----\n",
+  "client_email": "lancatserver@p2p-talking.iam.gserviceaccount.com",
+  "client_id": "101856663993191357371",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/lancatserver%40p2p-talking.iam.gserviceaccount.com"
+}

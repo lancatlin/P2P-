@@ -1,12 +1,8 @@
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
+from oauth2client.service_account import ServiceAccountCredentials as SAC
+import gspread
 
-gauth = GoogleAuth()
-url = gauth.GetAuthUrl()
-code = 
-
-drive = GoogleDrive(gauth)
-
-file = drive.CreateFile({'title': 'Hello.txt'})
-file.SetContentString('Hello World!')
-file.Upload()
+scopes = ['https://spreadsheets.google.com/feeds']
+service = SAC.from_json_keyfile_name('service.json',scopes)
+gc = gspread.authorize(service)
+sheet = gc.open('IP').sheet1
+print(sheet.get_all_records())

@@ -1,0 +1,14 @@
+問題  有關google drive api 與 oauth2client
+小弟想做的程式是使用google drive存放數據，並讓程式能進行讀取及編輯，簡單講就是google drive作為伺服器。
+實際目標是讓程式能在不需要使用者認証就讀取及編寫雲端硬碟上的文件。
+困難點：不知道如何讓pydrive 使用Service Account進行認証
+
+歷程：
+首先我辦了一個google api的專案，並建立一個oauth2.0用戶端ID，使用pydrive.auth.GoogleAuth 去認証是沒有問題的，但由於程式要的資料並不是用戶資料，所以前面方法是不可行的。
+我再來在我的專案新增了一個服務帳戶，並且下載了json金鑰，但苦於不知如何使用pydrive連結。
+我上網查使用Service Account的方法，參考Google寫的一篇教學：https://developers.google.com/api-client-library/python/auth/service-accounts
+前面連接Service Account的指令我使用後沒有錯誤，但後面不太懂如何連接到google api。
+後來我去查詢pydrive.auth的文檔，發現裡面有一項ServiceAuth()似乎是用來連接Service Account 的，但我不知如何使用。
+
+有關我專案的詳細內容：
+我要實作一個P2P的聊天程式，目前專案已可以在互相知道對方NAT 的IP位址的情況下進行通訊。github連結：https://github.com/lancatlin/P2P-.git。未來目標是能夠自動配對使用者，由於小弟是自學，沒有伺服器，所以選定用google drive來進行小型資料儲存。

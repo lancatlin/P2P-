@@ -1,2 +1,6 @@
-P2P talking-041270e8f646.json
+pip-selfcheck.json
+P2P talking-1246da9b2e36.json
+__pycache__
+Server_env/__pycache__
 *.pyc
+.idea

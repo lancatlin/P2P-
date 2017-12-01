@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 from tkinter import *
-import tkmain
-
+import tkmain,server
 
 class window(Tk):
     def __init__(self):
@@ -12,12 +11,9 @@ class window(Tk):
 
         f1 = Frame(self)
         f1.grid(row=rows, columnspan=5, sticky=W, pady=8, padx=5)
-        Label(f1, text='Ip:', width=5).grid(row=rows, sticky=W)
-        self.ipentry = Entry(f1, width=10)
-        self.ipentry.grid(row=rows, column=1)
-        Label(f1, text='port:', width=5).grid(row=rows, column=2)
-        self.portentry = Entry(f1, width=5)
-        self.portentry.grid(row=rows, column=3)
+        Label(f1, text='聊天室:', width=5).grid(row=rows, sticky=W)
+        self.roomentry = Entry(f1, width=15)
+        self.roomentry.grid(row=rows, column=1)
         rows += 1
 
         f2 = Frame(self)
@@ -53,7 +49,7 @@ class window(Tk):
         message.grid(row=rows, columnspan=5, sticky=N, pady=15)
         self.mainloop()
     def setIp(self):
-        ip = self.ipentry.get()
+        ip = self.roomentry.get()
         self._print_('準備連接:'+ip)
         self.net = tkmain.net(ip, self)
         '''start = threading.Thread(target = self.net.server(),args=())

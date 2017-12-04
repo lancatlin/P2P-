@@ -1,22 +1,34 @@
-import socket,server
+import socket,server,ipgetter
+from random import randint
 
 class network:
-    def __init__(self,room,name,window):
-        self.room = room
-        self.name = name
+    def __init__(self,window):
+        self.room = window.roomentry.get()
+        self.name = window.nameentry.get()
         self.window = window
         self.data = server.GetIP()
-        addr = self.data.search(room)
+        self.lan_addr = self.get_LAN()
+        addr = self.data.search(self.room)
+        self.wan = ipgetter.myip()
         if addr == None:
-            self.server()
+            self.mode = True
+            self.start = lambda :self.server()
         else:
-            self.client()
+            self.mode = False
+            self.start = lambda :self.client()
         self.place = socket.gethostname()
     def client(self):
-        pass
+        print('it is client')
     def server(self):
-        self.data.set_IP()
+        self.data.set_IP(self.room,self.wan,self.lan_addr[1])
+        self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        self.socket.bind(self.lan_addr)
+        print(self.socket.recvfrom(1024))
     def get_LAN(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8",80))
-        return s.getsockname()[0]
+        s.connect(("8.8.8.8",30000))
+        return s.getsockname()[0],randint(50000,60000)
+    def close(self):
+        if self.mode:
+            self.data.clear(self.room)
+            self.window.destroy()

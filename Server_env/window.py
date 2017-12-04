@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from tkinter import *
-import tkmain,server
+import NetWork,threading
 
 class window(Tk):
     def __init__(self):
@@ -47,14 +47,16 @@ class window(Tk):
         self.info.set('歡迎使用P2P')
         message = Label(self, textvariable=self.info, width=25)
         message.grid(row=rows, columnspan=5, sticky=N, pady=15)
+
         self.mainloop()
     def setIp(self):
-        ip = self.roomentry.get()
-        self._print_('準備連接:'+ip)
-        self.net = tkmain.net(ip, self)
-        '''start = threading.Thread(target = self.net.server(),args=())
+        room = self.roomentry.get()
+        self._print_('準備連接:'+room)
+        self.net = NetWork.network(self)
+        self.protocol("WM_DELETE_WINDOW", self.net.close)
+        start = threading.Thread(target = self.net.start)
         start.setDaemon(True)
-        start.start()'''
+        start.start()
     def enter(self):
         self.net.user(self.inputentry.get())
         self.inputentry.delete(0,END)

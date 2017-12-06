@@ -4,3 +4,5 @@ __pycache__
 Server_env/__pycache__
 *.pyc
 .idea
+*.xml
+Server_env/lib/python3.5/__pycache__

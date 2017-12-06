@@ -1,4 +1,4 @@
-import socket,server,ipgetter
+import socket,server,ipgetter,time
 from random import randint
 
 class network:
@@ -11,6 +11,7 @@ class network:
         self.lan_addr = self.get_LAN(),randint(50000,60000)
         addr = self.data.search(self.room)
         self.wan = self.get_LAN()
+        self.target = []
         if addr == None:
             self.mode = True
             self.start = lambda :self.server()
@@ -23,14 +24,22 @@ class network:
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         self.socket.bind(self.lan_addr)
         self.socket.sendto(self.massege,addr)
-        print(self.socket.recvfrom(1024))
+        self.receive()
     def server(self):
         self.data.set_IP(self.room,self.wan,self.lan_addr[1])
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         self.socket.bind(self.lan_addr)
-        data,host = self.socket.recvfrom(1024).decode()
-        print(host+':'+data)
-        self.socket.sendto(self.massege,host)
+        self.receive()
+    def receive(self):
+        while True:
+            data,host = self.socket.recvfrom(1024)
+            if host not in self.target:
+                self.target.append(host)
+                self.socket.sendto(self.massege,host)
+            else:
+                data = data.decode()
+                print(data)
+                self.window.add_new(data)
     def get_LAN(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8",30000))
@@ -38,4 +47,12 @@ class network:
     def close(self):
         if self.mode:
             self.data.clear(self.room)
-            self.window.destroy()
+        self.window.destroy()
+    def send(self,s):
+        now = time.strftime("[%H-%M]")
+        data = now + s
+        self.window.add_new('<You>' + data)
+        data = '<' + self.window.nameentry.get() + '>' + data
+        data = data.encode('UTF-8')
+        for i in self.target:
+            self.socket.sendto(data,i)

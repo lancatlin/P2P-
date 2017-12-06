@@ -58,7 +58,7 @@ class window(Tk):
         start.setDaemon(True)
         start.start()
     def enter(self):
-        self.net.user(self.inputentry.get())
+        self.net.send(self.inputentry.get())
         self.inputentry.delete(0,END)
     def _print_(self,s):
         print(s)

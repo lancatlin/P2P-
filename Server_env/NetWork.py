@@ -23,6 +23,7 @@ class network:
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
         self.socket.bind(self.lan_addr)
         self.socket.sendto(self.massege,addr)
+        print(self.socket.recvfrom(1024))
     def server(self):
         self.data.set_IP(self.room,self.wan,self.lan_addr[1])
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)

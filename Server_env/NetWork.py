@@ -23,7 +23,7 @@ class network:
         print('it is client')
         addr = self.data.search(self.name)
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-        self.socket.bind(self.lan_addr)
+        self.socket.bind(self.wan)
         self.client_data.set_IP(self.room,self.lan_addr[0],self.lan_addr[1])
         self.socket.sendto(self.massege,addr)
         data,host = self.socket.recvfrom(1024)
@@ -47,7 +47,7 @@ class network:
                 else:
                     data = data.decode()
                     self.window.add_new(data)
-            except socket.timeout:
+            except:
                 if self.mode:
                     target = self.client_data.get_all()
                     for i in target:

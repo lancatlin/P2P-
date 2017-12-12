@@ -13,6 +13,8 @@ class network:
         addr = self.data.search(self.room)
         self.wan = ipgetter.myip()
         self.target = []
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket.bind(self.lan_addr)
         if addr == None:
             self.mode = True
             self.start = lambda :self.server()
@@ -21,8 +23,6 @@ class network:
             self.start = lambda :self.client()
     def client(self):
         print('it is client')
-        self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-        self.socket.bind(self.lan_addr)
         self.client_data.set_IP(self.room,self.wan,self.lan_addr[1])
         self.socket.settimeout(5)
         while True:
@@ -38,9 +38,6 @@ class network:
         self.receive()
     def server(self):
         self.data.set_IP(self.room,self.wan,self.lan_addr[1])
-        self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-        self.socket.bind(self.lan_addr)
-
         self.receive()
     def receive(self):
         self.socket.settimeout(5)
@@ -53,12 +50,12 @@ class network:
                 else:
                     data = data.decode()
                     self.window.add_new(data)
-            except:
-                if self.mode:
-                    target = self.client_data.get_all()
-                    if target != []:
-                        for i in target:
-                            self.socket.sendto(self.massege,(i['IP'],i['port']))
+            except socket.timeout:
+                target = self.client_data.get_all()
+                if self.mode and target != []:
+                    for i in target:
+                        print('send to'+i['IP'])
+                        self.socket.sendto(self.massege,(i['IP'],i['port']))
     def get_LAN(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8",30000))

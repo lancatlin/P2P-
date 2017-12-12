@@ -31,10 +31,10 @@ class network:
                 self.socket.sendto(self.massege,addr)
                 data,host = self.socket.recvfrom(1024)
                 print(host,data)
+                self.client_data.clear(self.room)
                 break
             except socket.timeout:
                 print('等待過久')
-        self.client_data.clear(self.name)
         self.receive()
     def server(self):
         self.data.set_IP(self.room,self.wan,self.lan_addr[1])

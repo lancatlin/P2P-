@@ -30,5 +30,5 @@ class GetIP:
     def get_all(self):
         return self.sheet.get_all_records()
 if __name__ == '__main__':
-    test = GetIP('IP')
+    test = GetIP('client')
     print(test.get_all())

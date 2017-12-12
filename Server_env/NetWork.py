@@ -27,7 +27,7 @@ class network:
         self.socket.settimeout(5)
         while True:
             try:
-                addr = self.data.search(self.name)
+                addr = self.data.search(self.room)
                 self.socket.sendto(self.massege,addr)
                 data,host = self.socket.recvfrom(1024)
                 print(host,data)
@@ -58,7 +58,7 @@ class network:
                     target = self.client_data.get_all()
                     if target != []:
                         for i in target:
-                            self.socket.sendto(self.massege,(i[1],i[2]))
+                            self.socket.sendto(self.massege,(i['IP'],i['port']))
     def get_LAN(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8",30000))

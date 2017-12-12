@@ -27,13 +27,16 @@ class network:
         self.socket.settimeout(5)
         while True:
             try:
-                addr = self.data.search(self.room)
-                self.socket.sendto(self.massege,addr)
                 data,host = self.socket.recvfrom(1024)
                 print(host,data)
+                self.socket.sendto(self.massege,host)
+                self.target.append(host)
                 self.client_data.clear(self.room)
                 break
             except socket.timeout:
+                addr = self.data.search(self.room)
+                print('嘗試連接到', addr)
+                self.socket.sendto(self.massege, addr)
                 print('等待過久')
         self.receive()
     def server(self):

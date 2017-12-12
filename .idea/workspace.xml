@@ -39,8 +39,8 @@
       <file leaf-file-name="NetWork.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server_env/NetWork.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="469">
-              <caret line="36" column="29" lean-forward="true" selection-start-line="36" selection-start-column="29" selection-end-line="36" selection-end-column="29" />
+            <state relative-caret-position="-675">
+              <caret line="32" column="39" lean-forward="false" selection-start-line="32" selection-start-column="39" selection-end-line="32" selection-end-column="39" />
               <folding>
                 <element signature="e#0#34#0" expanded="true" />
               </folding>
@@ -110,6 +110,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="PUSH_TAGS">
+      <GitPushTagMode />
+    </option>
     <push-targets>
       <push-target-info target-remote="github" target-branch="master" repo="$PROJECT_DIR$" source="master" />
     </push-targets>
@@ -414,7 +417,14 @@
       <option name="project" value="LOCAL" />
       <updated>1513079432665</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="外網配對成功">
+      <created>1513079965007</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1513079965007</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -456,7 +466,8 @@
     <MESSAGE value="測試外網配對3，client會重複發送封包。修正一些小問題。" />
     <MESSAGE value="測試外網配對4，修正server錯誤" />
     <MESSAGE value="測試外網配對5，遇到未知錯誤，加入print來觀察。" />
-    <option name="LAST_COMMIT_MESSAGE" value="測試外網配對5，遇到未知錯誤，加入print來觀察。" />
+    <MESSAGE value="外網配對成功" />
+    <option name="LAST_COMMIT_MESSAGE" value="外網配對成功" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -780,8 +791,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server_env/NetWork.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="469">
-          <caret line="36" column="29" lean-forward="true" selection-start-line="36" selection-start-column="29" selection-end-line="36" selection-end-column="29" />
+        <state relative-caret-position="-675">
+          <caret line="32" column="39" lean-forward="false" selection-start-line="32" selection-start-column="39" selection-end-line="32" selection-end-column="39" />
           <folding>
             <element signature="e#0#34#0" expanded="true" />
           </folding>

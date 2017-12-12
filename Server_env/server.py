@@ -31,7 +31,4 @@ class GetIP:
         return self.sheet.get_all_records()
 if __name__ == '__main__':
     test = GetIP('IP')
-    t = test.search('lancat')
-    test.set_IP('try4','26',2000)
-    test.clear('try4')
-    print(test.all)
+    print(test.get_all())

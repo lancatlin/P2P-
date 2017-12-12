@@ -21,13 +21,19 @@ class network:
             self.start = lambda :self.client()
     def client(self):
         print('it is client')
-        addr = self.data.search(self.name)
         self.socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-        self.socket.bind(self.wan)
-        self.client_data.set_IP(self.room,self.lan_addr[0],self.lan_addr[1])
-        self.socket.sendto(self.massege,addr)
-        data,host = self.socket.recvfrom(1024)
-        print(host,data)
+        self.socket.bind(self.lan_addr)
+        self.client_data.set_IP(self.room,self.wan,self.lan_addr[1])
+        self.socket.settimeout(5)
+        while True:
+            try:
+                addr = self.data.search(self.name)
+                self.socket.sendto(self.massege,addr)
+                data,host = self.socket.recvfrom(1024)
+                print(host,data)
+                break
+            except socket.timeout:
+                print('等待過久')
         self.client_data.clear(self.name)
         self.receive()
     def server(self):
@@ -50,8 +56,9 @@ class network:
             except:
                 if self.mode:
                     target = self.client_data.get_all()
-                    for i in target:
-                        self.socket.sendto(self.massege,(i[1],i[2]))
+                    if target != []:
+                        for i in target:
+                            self.socket.sendto(self.massege,(i[1],i[2]))
     def get_LAN(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8",30000))
@@ -60,6 +67,9 @@ class network:
         if self.mode:
             self.data.clear(self.room)
             self.send('聊天室關閉')
+        else:
+            self.client_data.clear(self.room)
+            self.send(self.name+'離開聊天室')
         self.window.destroy()
     def send(self,s,mode=True):
         if mode:

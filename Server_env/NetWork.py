@@ -2,10 +2,10 @@ import socket,server,ipgetter,time
 from random import randint
 
 class network:
-    def __init__(self,window):
+    def __init__(self,window,name,room):
         self.massege = ('my name is' + socket.gethostname()).encode()
-        self.room = window.roomentry.get()
-        self.name = window.nameentry.get()
+        self.room = room
+        self.name = name
         self.window = window
         self.data = server.GetIP('IP')
         self.client_data = server.GetIP('client')
@@ -38,12 +38,11 @@ class network:
                 print('嘗試連接到', addr)
                 self.socket.sendto(self.massege, addr)
                 print('等待過久')
-        self.receive()
     def server(self):
         self.data.set_IP(self.room,self.wan,self.lan_addr[1])
-        self.receive()
     def receive(self):
         self.socket.settimeout(5)
+        print('receive')
         while True:
             try:
                 data,host = self.socket.recvfrom(1024)

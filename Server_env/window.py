@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from tkinter import *
-import NetWork,threading
+import NetWork,threading,login
 
 class window(Tk):
     def __init__(self):
@@ -21,7 +21,7 @@ class window(Tk):
         Label(f2, text='使用者名稱:', width=10).grid(row=rows, sticky=W, columnspan=2)
         self.nameentry = Entry(f2, width=10)
         self.nameentry.grid(row=rows, column=2)
-        Button(f2, text='連接', width=5, command=lambda: self.setIp()).grid(row=rows, column=3)
+        Button(f2, text='連接', width=5, command=lambda :self.setIP()).grid(row=rows, column=3)
         rows += 1
 
         Label(self, text='聊天內容:', width=8).grid(row=rows, columnspan=2, sticky=W)
@@ -29,8 +29,8 @@ class window(Tk):
 
         self.talktext = Text(self, width=45, height=35)
         self.talktext.grid(row=rows, columnspan=5, padx=8)
-        sb = Scrollbar(self)
-        sb.grid(row=rows, column=4, sticky=E + W + S + N)
+        sb = Scrollbar(self,width=20)      #滾輪設定
+        sb.grid(row=rows, column=4, sticky=E  + S + N)
         self.talktext['yscrollcommand'] = sb.set
         sb['command'] = self.talktext.yview
         rows += 1
@@ -40,13 +40,12 @@ class window(Tk):
         Label(inputf, text='輸入:', width=5).grid(row=rows, sticky=W)
         self.inputentry = Entry(inputf, width=20)
         self.inputentry.grid(row=rows, column=1, columnspan=3, pady=5)
-        self.inputentry.bind('<Return>', lambda x: self.enter())
+        self.inputentry.bind('<Return>', lambda x: self.enter())      #將enter鍵綁定到enter函數
         rows += 1
 
         self.info = StringVar()
         self.info.set('歡迎使用P2P')
-        message = Label(self, textvariable=self.info, width=25)
-        message.grid(row=rows, columnspan=5, sticky=N, pady=15)
+        Label(self, textvariable=self.info, width=25).grid(row=rows, columnspan=5, sticky=N, pady=15)
 
         self.mainloop()
     def setIp(self):
@@ -68,4 +67,7 @@ class window(Tk):
         self.talktext.see(END)
         print(s)
 
-window()
+l = login.login()
+l.wait_login()
+if l.start:
+    window()

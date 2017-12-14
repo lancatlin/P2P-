@@ -2,10 +2,9 @@ import socket,server,ipgetter,time
 from random import randint
 
 class network:
-    def __init__(self,window,name,room):
+    def __init__(self,window,info):
         self.massege = ('my name is' + socket.gethostname()).encode()
-        self.room = room
-        self.name = name
+        self.room,self.name = info[0],info[1]
         self.window = window
         self.data = server.GetIP('IP')
         self.client_data = server.GetIP('client')
@@ -67,7 +66,6 @@ class network:
             self.data.clear(self.room)
             self.send('聊天室關閉')
         else:
-            self.client_data.clear(self.room)
             self.send(self.name+'離開聊天室')
         self.window.destroy()
     def send(self,s,mode=True):

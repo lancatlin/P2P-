@@ -1,15 +1,19 @@
 #-*- coding: utf-8 -*-
 from tkinter import *
 import NetWork,threading
+from tkinter.font import Font
 
 class window(Tk):
-    def __init__(self):
+    def __init__(self,info):
         super().__init__()
         self.title('P2P Talking')
         self.geometry('350x700')
         rows = 1
-
-        Label(self, text='聊天內容:', width=8).grid(row=rows, columnspan=2, sticky=W)
+        
+        ft = Font(family = '微軟正黑體',size = 15)
+        Label(self, text='聊天室： '+info[0],font=ft).grid(row=rows,sticky=W)
+        rows+=1
+        Label(self, text='使用者: '+info[1],font=ft).grid(row=rows, columnspan=2, sticky=W)
         rows += 1
 
         self.talktext = Text(self, width=45, height=35)
@@ -22,8 +26,8 @@ class window(Tk):
 
         inputf = Frame(self)
         inputf.grid(row=rows)
-        Label(inputf, text='輸入:', width=5).grid(row=rows, sticky=W)
-        self.inputentry = Entry(inputf, width=20)
+        Label(inputf, text='輸入:', width=5,font=ft).grid(row=rows, sticky=W)
+        self.inputentry = Entry(inputf, width=20,font=ft)
         self.inputentry.grid(row=rows, column=1, columnspan=3, pady=5)
         self.inputentry.bind('<Return>', lambda x: self.enter())      #將enter鍵綁定到enter函數
         rows += 1
@@ -31,14 +35,9 @@ class window(Tk):
         self.info = StringVar()
         self.info.set('歡迎使用P2P')
         Label(self, textvariable=self.info, width=25).grid(row=rows, columnspan=5, sticky=N, pady=15)
-    def setIp(self):
-        room = self.roomentry.get()
-        self._print_('準備連接:'+room)
-        self.net = NetWork.network(self)
+    def setIp(self,n):
+        self.net = n
         self.protocol("WM_DELETE_WINDOW", self.net.close)
-        start = threading.Thread(target = self.net.start)
-        start.setDaemon(True)
-        start.start()
     def enter(self):
         self.net.send(self.inputentry.get())
         self.inputentry.delete(0,END)

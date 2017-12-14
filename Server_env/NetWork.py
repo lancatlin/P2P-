@@ -75,7 +75,7 @@ class network:
             now = time.strftime("[%H-%M]")
             data = now + s
             self.window.add_new('<You>' + data)
-            data = '<' + self.window.nameentry.get() + '>' + data
+            data = '<' + self.name + '>' + data
         else:
             data=s
         data = data.encode('UTF-8')

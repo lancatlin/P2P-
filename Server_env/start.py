@@ -31,6 +31,7 @@ class start(Tk):
     def begin(self):
         self.window = window.window()
         self.net = NetWork.network(self.window,self.nameentry.get(),self.roomentry.get())
+        self.window.net = self.net
         self._print_('準備連接：'+self.roomentry.get()+'中...')
         self.net.start()
         start = threading.Thread(target=self.net.receive)

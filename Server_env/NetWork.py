@@ -80,8 +80,8 @@ class network:
         if mode:
             now = time.strftime("[%H-%M]")
             data = now + s
-            self.window.add_new('<You>' + data)
-            data = '<' + self.name + '>' + data
+            self.window.add_new('<'+self.name+'>'+data)
+            data = '<'+self.name+'>'+data
         else:
             data=s
         data = data.encode('UTF-8')

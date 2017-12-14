@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
 from tkinter import *
-import NetWork,threading
-from tkinter.font import Font
+import record
 
 class window(Tk):
     def __init__(self,info):
@@ -29,6 +28,8 @@ class window(Tk):
         sb.grid(row=rows, column=4, sticky=E  + S + N)
         self.talktext['yscrollcommand'] = sb.set
         sb['command'] = self.talktext.yview
+        self.record = record.Record(self)
+        self.record.find(info[0])
         rows += 1
 
         inputf = Frame(self)
@@ -50,6 +51,7 @@ class window(Tk):
     def enter(self):
         self.net.send(self.inputentry.get())
         self.inputentry.delete(0,END)
+        self.record.write()
     def _print_(self,s):
         print(s)
         self.info.set(s)

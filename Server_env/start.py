@@ -4,7 +4,7 @@ class start(Tk):
     def __init__(self):
         super().__init__()
         self.title('P2P 聊天程式')
-        self.geometry('400x200')
+        self.geometry('450x220')
         ft = lambda s: ('微軟正黑體',s)
         rows = 0
 

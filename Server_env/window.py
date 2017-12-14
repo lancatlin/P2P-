@@ -10,13 +10,20 @@ class window(Tk):
         self.geometry('350x700')
         rows = 1
         
-        ft = Font(family = '微軟正黑體',size = 15)
-        Label(self, text='聊天室： '+info[0],font=ft).grid(row=rows,sticky=W)
+        ft = lambda s:('微軟正黑體',s)
+        f1 = Frame(self)
+        f1.grid(row=rows,sticky=W,padx=10,pady=5)
+        Label(f1, text='聊天室：  ',font=ft(15)).grid(row=0,sticky=W)
+        Label(f1, text=info[0],bg ='white',font=ft(15)).grid(row=0,column=1,sticky=W)
+
         rows+=1
-        Label(self, text='使用者: '+info[1],font=ft).grid(row=rows, columnspan=2, sticky=W)
+        f2 = Frame(self)
+        f2.grid(row=rows,sticky=W,padx=10,pady=5)
+        Label(f2, text='使用者:  ',font=ft(15)).grid(row=0, sticky=W)
+        Label(f2, text=info[1],font = ft(15),bg='white').grid(row=0,column=1,sticky=W)
         rows += 1
 
-        self.talktext = Text(self, width=45, height=35)
+        self.talktext = Text(self, width=35, height=20,font=ft(12))
         self.talktext.grid(row=rows, columnspan=5, padx=8)
         sb = Scrollbar(self,width=20)      #滾輪設定
         sb.grid(row=rows, column=4, sticky=E  + S + N)
@@ -35,6 +42,8 @@ class window(Tk):
         self.info = StringVar()
         self.info.set('歡迎使用P2P')
         Label(self, textvariable=self.info, width=25).grid(row=rows, columnspan=5, sticky=N, pady=15)
+        self._print_('已連接'+info[0])
+
     def setIp(self,n):
         self.net = n
         self.protocol("WM_DELETE_WINDOW", self.net.close)

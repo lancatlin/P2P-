@@ -4,9 +4,6 @@
     <list default="true" id="7b7ef61e-1253-46ec-9cad-bfb4c8f19437" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/Server_env/NetWork.py" afterPath="$PROJECT_DIR$/Server_env/NetWork.py" />
-      <change beforePath="$PROJECT_DIR$/Server_env/server.py" afterPath="$PROJECT_DIR$/Server_env/server.py" />
-      <change beforePath="$PROJECT_DIR$/Server_env/start.py" afterPath="$PROJECT_DIR$/Server_env/start.py" />
-      <change beforePath="$PROJECT_DIR$/Server_env/window.py" afterPath="$PROJECT_DIR$/Server_env/window.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,8 +29,8 @@
       <file leaf-file-name="NetWork.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Server_env/NetWork.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="13" column="34" lean-forward="false" selection-start-line="13" selection-start-column="34" selection-end-line="13" selection-end-column="34" />
+            <state relative-caret-position="-220">
+              <caret line="49" column="16" lean-forward="true" selection-start-line="49" selection-start-column="16" selection-end-line="49" selection-end-column="16" />
               <folding>
                 <element signature="e#0#34#0" expanded="true" />
               </folding>
@@ -456,7 +453,14 @@
       <option name="project" value="LOCAL" />
       <updated>1513079965007</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="加入內外網支援，測試1">
+      <created>1513246432558</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1513246432558</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -499,7 +503,8 @@
     <MESSAGE value="測試外網配對4，修正server錯誤" />
     <MESSAGE value="測試外網配對5，遇到未知錯誤，加入print來觀察。" />
     <MESSAGE value="外網配對成功" />
-    <option name="LAST_COMMIT_MESSAGE" value="外網配對成功" />
+    <MESSAGE value="加入內外網支援，測試1" />
+    <option name="LAST_COMMIT_MESSAGE" value="加入內外網支援，測試1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -824,8 +829,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server_env/NetWork.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="13" column="34" lean-forward="false" selection-start-line="13" selection-start-column="34" selection-end-line="13" selection-end-column="34" />
+        <state relative-caret-position="-220">
+          <caret line="49" column="16" lean-forward="true" selection-start-line="49" selection-start-column="16" selection-end-line="49" selection-end-column="16" />
           <folding>
             <element signature="e#0#34#0" expanded="true" />
           </folding>

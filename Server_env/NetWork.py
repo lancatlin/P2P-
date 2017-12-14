@@ -23,7 +23,7 @@ class network:
             self.start = lambda :self.client()
     def client(self):
         print('it is client')
-        self.client_data.set_IP(self.room,self.wan,self.self.lan,self.port)
+        self.client_data.set_IP(self.room,self.wan,self.lan,self.port)
         self.socket.settimeout(5)
         while True:
             try:

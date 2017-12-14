@@ -11,7 +11,7 @@ class network:
         self.client_data = server.GetIP('client')
         self.lan_addr = self.get_LAN(),randint(50000,60000)
         addr = self.data.search(self.room)
-        self.wan = ipgetter.myip()
+        self.wan = self.get_LAN()
         self.target = []
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind(self.lan_addr)

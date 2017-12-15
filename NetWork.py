@@ -52,9 +52,12 @@ class network:
                 if host not in self.target:
                     self.target.append(host)
                     self.socket.sendto(self.massege,host)
+                    print(host)
                 else:
                     data = data.decode()
                     self.window.add_new(data)
+                    if self.mode:
+                        self.send(data,one=host)
             except socket.timeout:
                 target = self.client_data.get_all()
                 if self.mode and target != []:
@@ -72,11 +75,11 @@ class network:
     def close(self):
         if self.mode:
             self.data.clear(self.room)
-            self.send('聊天室關閉')
+            self.send('聊天室關閉',False)
         else:
-            self.send(self.name+'離開聊天室')
+            self.send(self.name+'離開聊天室',False)
         self.window.destroy()
-    def send(self,s,mode=True):
+    def send(self,s,mode=True,one=None):
         if mode:
             now = time.strftime("[%H-%M]")
             data = now + s
@@ -86,4 +89,5 @@ class network:
             data=s
         data = data.encode('UTF-8')
         for i in self.target:
-            self.socket.sendto(data,i)
+            if i != one:
+                self.socket.sendto(data,i)

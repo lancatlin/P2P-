@@ -12,14 +12,14 @@ class window(Tk):
         ft = lambda s:('微軟正黑體',s)   #設定字體，傳入size，回傳一個tuple
         f1 = Frame(self)
         f1.grid(row=rows,sticky=W,padx=10,pady=5)
-        Label(f1, text='聊天室：  ',font=ft(15)).grid(row=0,sticky=W)
-        Label(f1, text=info[0],bg ='white',font=ft(15)).grid(row=0,column=1,sticky=W)
+        Label(f1, text='聊天室:  ',font=ft(15)).grid(row=0,sticky=W)
+        Label(f1, text=info[0],font=ft(15)).grid(row=0,column=1,sticky=W)
 
         rows+=1
         f2 = Frame(self)
         f2.grid(row=rows,sticky=W,padx=10,pady=5)
         Label(f2, text='使用者:  ',font=ft(15)).grid(row=0, sticky=W)
-        Label(f2, text=info[1],font = ft(15),bg='white').grid(row=0,column=1,sticky=W)
+        Label(f2, text=info[1],font = ft(15)).grid(row=0,column=1,sticky=W)
         rows += 1
 
         self.talktext = Text(self, width=35, height=20,font=ft(12))

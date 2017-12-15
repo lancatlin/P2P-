@@ -57,7 +57,7 @@ class network:
                     data = data.decode()
                     self.window.add_new(data)
                     if self.mode:
-                        self.send(data,one=host)
+                        self.send(data,mode=False,one=host)
             except socket.timeout:
                 target = self.client_data.get_all()
                 if self.mode and target != []:

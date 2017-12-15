@@ -1,12 +1,59 @@
 
-my name islancat-Notebook
-<drive>[21-17]123
-<lancat>[21-18]456
-<drive>[21-18]æ¸¬è©¦
-<drive>[21-19]æ‰“å­—å¾ˆå¿«
-<drive>[21-19]å˜¿å˜¿
-<drive>[21-19]æ¸¬è©¦
-<drive>[21-19]æˆåŠŸäº†
+<lancat>[20-28]123
+<PC>[20-28]oh hi yo
+<lancat>[20-28]<PC>[20-28]oh hi yo
+<PC>[20-28]cool oh
+<lancat>[20-28]<PC>[20-28]cool oh
+<lancat>[20-28]XD
+<lancat>[20-28]yes it is
+<PC>[20-29]¦A¨Ó´N¬O¦h¤H¤F
+<lancat>[20-28]<PC>[20-29]¦A¨Ó´N¬O¦h¤H¤F
+<PC>[20-29]
+lets go!
+<lancat>[20-28]<PC>[20-29]
+lets go!
+<PC>[20-29] «¢«¢
+<lancat>[20-29]<PC>[20-29] «¢«¢
+<PC>[20-29]
+¥h§a
+<lancat>[20-29]<PC>[20-29]
+¥h§a
+<lancat>[20-29]¦n§Ú¶}¦Ñ®à¾÷
+<PC>[20-31]
+¼K!§Ú¯uªºÄ±±o§Ú­Ì³o­Ó¦³°÷±j!
+<lancat>[20-30]<PC>[20-31]
+¼K!§Ú¯uªºÄ±±o§Ú­Ì³o­Ó¦³°÷±j!
+<PC>[20-31]
+«¢«¢²{¦b¦³¬ö¿ı¡A¤£¯àÀH«K½|Å¼¸Ü
+<lancat>[20-30]<PC>[20-31]
+«¢«¢²{¦b¦³¬ö¿ı¡A¤£¯àÀH«K½|Å¼¸Ü
+<lancat>[20-30]¨Ä
+<old-PC>[20-36]123
+<lancat>[20-36]<old-PC>[20-36]123
+<lancat>[20-36]¥i¥HÕÙ
+<lancat>[20-36]µ¥µ¥
+<lancat>[20-36]³o¬O«ç¼Ë..
+<old-PC>[20-37]Ô£¡H
+<lancat>[20-36]<old-PC>[20-37]Ô£¡H
+<PC>[20-37]
+Âàµo¦³¥²­n³o¼Ë¶Ü?XD
+<lancat>[20-36]<PC>[20-37]
+Âàµo¦³¥²­n³o¼Ë¶Ü?XD
+<lancat>[20-37]«¢«¢
+<lancat>[20-37]¦n§Ú§ï
 
-my name islancat-Notebook
-<drive>[21-23]test
+<lancat>[20-39]123
+<old-PC>[20-40]¶Ù¦U¦ì
+<lancat>[20-40]³á³á»ÅÕÙ
+<server>[20-40]¬İ°_¨Ó¸s²Õ¨S°İÃD¤F!!
+<server>[20-40]²n³á
+<server>[20-40]¬Æ¦Ülinux¸òwindows¤]¤¬³q¤F!!
+<lancat>[20-40]¯uªº¤Ó´Î¤F
+<old-PC>[20-41]¬Oªü
+<old-PC>[20-42]¥[±i¦°¸Û
+<lancat>[20-42]¦n³á
+my name isss20161210
+<lancat>[20-44]¶Ù
+<lancat>[20-44]³o¬O§Úªº®à¾÷
+<asdl>[20-45]hi
+<server>[20-44]³o¬O§Úªºµ§¹q

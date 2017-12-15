@@ -1,8 +1,7 @@
 pip-selfcheck.json
 P2P talking-1246da9b2e36.json
 __pycache__
-Server_env/__pycache__
+Server_env/
 *.pyc
-.idea
+.idea/
 *.xml
-Server_env/lib/python3.5/__pycache__

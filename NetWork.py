@@ -23,7 +23,7 @@ class network:
             self.start = lambda :self.client()
     def client(self):
         print('it is client')
-        self.client_data.set_IP(self.room,self.wan,self.lan,self.port)
+        self.client_data.set_IP(self.name,self.wan,self.lan,self.port)
         self.socket.settimeout(5)
         while True:
             try:
@@ -31,7 +31,7 @@ class network:
                 print(host,data)
                 self.socket.sendto(self.massege,host)
                 self.target.append(host)
-                self.client_data.clear(self.room)
+                self.client_data.clear(self.name)
                 break
             except socket.timeout:
                 addr = self.data.search(self.room)
@@ -77,6 +77,7 @@ class network:
             self.data.clear(self.room)
             self.send('聊天室關閉',False)
         else:
+            self.client_data.clear(self.name)
             self.send(self.name+'離開聊天室',False)
         self.window.destroy()
     def send(self,s,mode=True,one=None):

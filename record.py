@@ -2,6 +2,8 @@ import os
 class Record:
     def __init__(self,window):
         self.window = window
+        if 'saves' not in os.listdir():
+            os.mkdir('saves')
     def find(self,room):
         self.room = 'saves/' + room + '.txt'
         try:

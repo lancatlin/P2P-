@@ -1,11 +1,14 @@
 from oauth2client.service_account import ServiceAccountCredentials as SAC
-import gspread
+import gspread,key
 
 class GetIP:
     def __init__(self,sheet):
+        k = key.key()
+        k.read()
         scopes = ['https://spreadsheets.google.com/feeds']
-        service = SAC.from_json_keyfile_name('P2P talking-1246da9b2e36.json',scopes)
+        service = SAC.from_json_keyfile_name('key.json',scopes)
         gc = gspread.authorize(service)
+        k.remove()
         self.sheet = gc.open(sheet).sheet1
         self.all = self.sheet.get_all_records()
     def search(self,name):

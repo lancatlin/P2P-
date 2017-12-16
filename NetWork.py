@@ -29,8 +29,8 @@ class network:
             try:
                 data,host = self.socket.recvfrom(1024)
                 print(host,data)
-                self.socket.sendto(self.massege,host)
                 self.target.append(host)
+                self.send(self.name+'加入聊天室',mode=False)
                 self.client_data.clear(self.name)
                 break
             except socket.timeout:

@@ -3,8 +3,8 @@ from random import randint
 
 class network:
     def __init__(self,window,info):
-        self.massege = ('my name is' + socket.gethostname()).encode()
         self.room,self.name = info[0],info[1]
+        self.massege = ('my name is ' + self.name + ' in room:' + self.room)
         self.window = window
         self.data = server.GetIP('IP')
         self.client_data = server.GetIP('client')
@@ -47,15 +47,18 @@ class network:
         print('receive')
         if self.mode:
             self.send('創建聊天室',mode=False)
+            self.window.add_new('創建聊天室')
         else:
             self.send(self.name + '加入聊天室', mode=False)
+            self.window.add_new(self.name+'加入聊天室')
         while True:
             try:
                 data,host = self.socket.recvfrom(1024)
                 if host not in self.target:
                     self.target.append(host)
+                    print(self.target)
                     self.socket.sendto(self.massege,host)
-                    print(host)
+                    self.window.add_new(data.decode())
                 else:
                     data = data.decode()
                     self.window.add_new(data)
@@ -91,7 +94,6 @@ class network:
             data = '<'+self.name+'>'+data
         else:
             data=s
-            self.window.add_new(data)
         data = data.encode('UTF-8')
         for i in self.target:
             if i != one:

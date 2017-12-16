@@ -30,7 +30,6 @@ class network:
                 data,host = self.socket.recvfrom(1024)
                 print(host,data)
                 self.target.append(host)
-                self.send(self.name+'加入聊天室',mode=False)
                 self.client_data.clear(self.name)
                 break
             except socket.timeout:
@@ -46,6 +45,10 @@ class network:
     def receive(self):
         self.socket.settimeout(5)
         print('receive')
+        if self.mode:
+            self.send('創建聊天室',mode=False)
+        else:
+            self.send(self.name + '加入聊天室', mode=False)
         while True:
             try:
                 data,host = self.socket.recvfrom(1024)
@@ -88,6 +91,7 @@ class network:
             data = '<'+self.name+'>'+data
         else:
             data=s
+            self.window.add_new(data)
         data = data.encode('UTF-8')
         for i in self.target:
             if i != one:

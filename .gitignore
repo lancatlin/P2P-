@@ -5,3 +5,4 @@ Server_env/
 *.pyc
 .idea/
 *.xml
+saves/

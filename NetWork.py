@@ -4,7 +4,7 @@ from random import randint
 class network:
     def __init__(self,window,info):
         self.room,self.name = info[0],info[1]
-        self.massege = ('my name is ' + self.name + ' in room:' + self.room)
+        self.massege = ('my name is ' + self.name + ' in room:' + self.room).encode()
         self.window = window
         self.data = server.GetIP('IP')
         self.client_data = server.GetIP('client')

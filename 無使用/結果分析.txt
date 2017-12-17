@@ -1,3 +1,0 @@
-True,
-False,{'業者':'中華電信','NAT':'Dlink'}
-False,

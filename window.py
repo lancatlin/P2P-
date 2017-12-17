@@ -1,12 +1,13 @@
 #-*- coding: utf-8 -*-
 from tkinter import *
-import record
+import record,sound
 
 class window(Tk):
     def __init__(self,info):
         super().__init__()
         self.title('P2P Talking')
         self.geometry('350x700')
+        self.sound = sound.player()
         rows = 1
         
         ft = lambda s:('微軟正黑體',s)   #設定字體，傳入size，回傳一個tuple
@@ -58,4 +59,5 @@ class window(Tk):
     def add_new(self,s):
         self.talktext.insert(END, '\n' + s)
         self.talktext.see(END)
+        self.sound.play('auto')
         print(s)

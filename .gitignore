@@ -6,3 +6,5 @@ Server_env/
 .idea/
 *.xml
 saves/
+build/
+dist/

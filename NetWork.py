@@ -13,7 +13,7 @@ class network:
         addr = self.data.search(self.room)
         self.wan = ipgetter.myip()
         self.target = []
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((self.lan,self.port))
         if addr == None:
             self.mode = True
@@ -21,27 +21,6 @@ class network:
         else:
             self.mode = False
             self.start = lambda :self.client()
-    def client(self):
-        print('it is client')
-        self.client_data.set_IP(self.name,self.wan,self.lan,self.port)
-        self.socket.settimeout(5)
-        while True:
-            try:
-                data,host = self.socket.recvfrom(1024)
-                print(host,data)
-                self.target.append(host)
-                self.client_data.clear(self.name)
-                break
-            except socket.timeout:
-                addr = self.data.search(self.room)
-                if addr['wan'] == self.wan:
-                    target = (addr['lan'],addr['port'])
-                else:
-                    target = (addr['wan'],addr['port'])
-                print('嘗試連接到', target)
-                self.socket.sendto(self.massege, target)
-    def server(self):
-        self.data.set_IP(self.room,self.wan,self.lan,self.port)
     def receive(self):
         self.socket.settimeout(5)
         print('receive')
@@ -79,12 +58,6 @@ class network:
         s.connect(("8.8.8.8",30000))
         return s.getsockname()[0]
     def close(self):
-        if self.mode:
-            self.data.clear(self.room)
-            self.send('聊天室關閉',False)
-        else:
-            self.client_data.clear(self.name)
-            self.send(self.name+'離開聊天室',False)
         self.window.destroy()
     def send(self,s,mode=True,one=None):
         if mode:
@@ -95,6 +68,55 @@ class network:
         else:
             data=s
         data = data.encode('UTF-8')
-        for i in self.target:
-            if i != one:
-                self.socket.sendto(data,i)
+        if self.mode:
+            for i in self.target:
+                if i != one:
+                    i.send(data)
+        else:
+            self.socket.send(data)
+class server(network):
+    def server(self):
+        self.data.set_IP(self.room,self.wan,self.lan,self.port)
+        self.socket.listen(5)
+        self.socket.settimeout(5)
+        while True:
+            try:
+                new,addr = self.socket.accept()
+                print(addr+'已連接')
+                self.target.append(new)
+            except socket.timeout:
+                target = self.client_data.get_all()
+                if self.mode and target != []:
+                    for i in target:
+                        if i['wan'] == self.wan:
+                            print('send to ' + i['lan'])
+                            self.socket.sendto(self.massege, (i['lan'], i['port']))
+                        else:
+                            print('send to ' + i['wan'])
+                            self.socket.sendto(self.massege, (i['wan'], i['port']))
+    def close(self):
+        self.data.clear(self.room)
+        self.send('聊天室關閉',False)
+        super().close()
+class client(network):
+    def client(self):
+        print('it is client')
+        self.client_data.set_IP(self.name,self.wan,self.lan,self.port)
+        self.socket.settimeout(10)
+        while True:
+            try:
+                self.socket.connect(target)
+                print('已連接'+str(target))
+                self.client_data.clear(self.name)
+                break
+            except socket.timeout:
+                addr = self.data.search(self.room)
+                if addr['wan'] == self.wan:
+                    target = (addr['lan'],addr['port'])
+                else:
+                    target = (addr['wan'],addr['port'])
+                print('嘗試連接到', target)
+    def close(self):
+        self.client_data.clear(self.name)
+        self.send(self.name + '離開聊天室', False)
+        super().close()

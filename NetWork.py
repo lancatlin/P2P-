@@ -46,6 +46,7 @@ class network:
                     result.append((i['lan'],i['port']))
                 else:
                     result.append((i['wan'],i['port']))
+            return target
 class server(network):
     def start(self):
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -62,7 +63,8 @@ class server(network):
                 thread.start()
                 self.target.append({'socket':new,'addr':addr,'thread':thread})
             except socket.timeout:
-                for i in self.get_target(self.client_data):
+                addr = self.get_target(self.client_data)
+                for i in addr:
                     udp.sendto(i)
     def receive(self,target):
         self.socket.settimeout(20)
@@ -77,7 +79,7 @@ class server(network):
                 target.close()
     def close(self):
         self.data.clear(self.room)
-        self.send('聊天室關閉',False)
+        #self.send('聊天室關閉',False)
         super().close()
     def send(self,s,mode=True,one=None):
         data = super().send(s,mode,one)
@@ -105,7 +107,7 @@ class client(network):
                 print('嘗試連接到', target)
     def close(self):
         self.client_data.clear(self.name)
-        self.send(self.name + '離開聊天室', False)
+        #self.send(self.name + '離開聊天室', False)
         super().close()
     def receive(self):
         self.socket.settimeout(20)

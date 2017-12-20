@@ -31,14 +31,13 @@ class start(Tk):
     def begin(self):
         info = self.roomentry.get(),self.nameentry.get()
         self.window = window.window(info)
-        self.net = NetWork.network(self.window,info)
         self._print_('準備連接：'+self.roomentry.get()+'中...')
-        self.net.start()
+        self.net = NetWork.begin(window,info)
         self.window.setIp(self.net)
         self._print_('已連接')
-        start = threading.Thread(target=self.net.receive)
-        start.setDaemon(True)
-        start.start()
+        main = threading.Thread(target=self.net.start)
+        main.setDaemon(True)
+        main.start()
         self.destroy()
         self.window.mainloop()
     def _print_(self,s):

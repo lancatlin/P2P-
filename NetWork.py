@@ -1,4 +1,4 @@
-import socket,server,ipgetter,time
+import socket,sheet,ipgetter,time,threading
 from random import randint
 
 class network:
@@ -6,53 +6,15 @@ class network:
         self.room,self.name = info[0],info[1]
         self.massege = ('my name is ' + self.name + ' in room:' + self.room).encode()
         self.window = window
-        self.data = server.GetIP('IP')
-        self.client_data = server.GetIP('client')
+        self.data = sheet.GetIP('IP')
+        self.client_data = sheet.GetIP('client')
         self.lan = self.get_LAN()
         self.port = randint(50000,60000)
-        addr = self.data.search(self.room)
         self.wan = ipgetter.myip()
         self.target = []
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((self.lan,self.port))
-        if addr == None:
-            self.mode = True
-            self.start = lambda :self.server()
-        else:
-            self.mode = False
-            self.start = lambda :self.client()
-    def receive(self):
-        self.socket.settimeout(5)
-        print('receive')
-        if self.mode:
-            self.send('創建聊天室',mode=False)
-            self.window.add_new('創建聊天室')
-        else:
-            self.send(self.name + '加入聊天室', mode=False)
-            self.window.add_new(self.name+'加入聊天室')
-        while True:
-            try:
-                data,host = self.socket.recvfrom(1024)
-                if host not in self.target:
-                    self.target.append(host)
-                    print(self.target)
-                    self.socket.sendto(self.massege,host)
-                    self.window.add_new(data.decode())
-                else:
-                    data = data.decode()
-                    self.window.add_new(data)
-                    if self.mode:
-                        self.send(data,mode=False,one=host)
-            except socket.timeout:
-                target = self.client_data.get_all()
-                if self.mode and target != []:
-                    for i in target:
-                        if i['wan'] == self.wan:
-                            print('send to ' + i['lan'])
-                            self.socket.sendto(self.massege,(i['lan'],i['port']))
-                        else:
-                            print('send to ' + i['wan'])
-                            self.socket.sendto(self.massege, (i['wan'], i['port']))
     def get_LAN(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8",30000))
@@ -68,38 +30,53 @@ class network:
         else:
             data=s
         data = data.encode('UTF-8')
-        if self.mode:
-            for i in self.target:
-                if i != one:
-                    i.send(data)
-        else:
-            self.socket.send(data)
+        return data
 class server(network):
-    def server(self):
+    def start(self):
+        udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        udp.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        udp.bind((self.lan, self.port))
         self.data.set_IP(self.room,self.wan,self.lan,self.port)
         self.socket.listen(5)
-        self.socket.settimeout(5)
+        self.socket.settimeout(10)
         while True:
             try:
                 new,addr = self.socket.accept()
                 print(addr+'已連接')
-                self.target.append(new)
+                thread = threading.Thread(target=self.receive,args=(new,))
+                thread.start()
+                self.target.append({'socket':new,'addr':addr,'thread':thread})
             except socket.timeout:
                 target = self.client_data.get_all()
-                if self.mode and target != []:
-                    for i in target:
-                        if i['wan'] == self.wan:
-                            print('send to ' + i['lan'])
-                            self.socket.sendto(self.massege, (i['lan'], i['port']))
-                        else:
-                            print('send to ' + i['wan'])
-                            self.socket.sendto(self.massege, (i['wan'], i['port']))
+                for i in target:
+                    if i['wan'] == self.wan:
+                        print('send to ' + i['lan'])
+                        udp.sendto(self.massege, (i['lan'], i['port']))
+                    else:
+                        print('send to ' + i['wan'])
+                        udp.sendto(self.massege, (i['wan'], i['port']))
+    def receive(self,target):
+        self.socket.settimeout(20)
+        while True:
+            try:
+                data,addr = target.recv(1024)
+                data = data.decode()
+                self.window.add_new(data)
+                self.send(data, mode=False, one=target)
+            except socket.timeout:
+                self.target.remove(target)
+                target.close()
     def close(self):
         self.data.clear(self.room)
         self.send('聊天室關閉',False)
         super().close()
+    def send(self,s,mode=True,one=None):
+        data = super().send(s,mode,one)
+        for i in self.target:
+            if i != one:
+                i['socket'].send(data)
 class client(network):
-    def client(self):
+    def start(self):
         print('it is client')
         self.client_data.set_IP(self.name,self.wan,self.lan,self.port)
         self.socket.settimeout(10)
@@ -120,3 +97,22 @@ class client(network):
         self.client_data.clear(self.name)
         self.send(self.name + '離開聊天室', False)
         super().close()
+    def receive(self):
+        self.socket.settimeout(20)
+        while True:
+            try:
+                data, addr = self.socket.recv(1024)
+                data = data.decode()
+                self.window.add_new(data)
+            except socket.timeout:
+                print('過久沒有連線')
+    def send(self,s,mode=True,one=None):
+        data = super().send(s,mode,one)
+        self.socket.send(data)
+def begin(window,info):
+    data = sheet.GetIP('IP')
+    addr = data.search(info[0])
+    if addr == []:
+        return server(window,info)
+    else:
+        return client(window,info)

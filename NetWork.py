@@ -80,9 +80,13 @@ class server(network):
         super().close()
     def send(self,s,mode=True,one=None):
         data = super().send(s,mode,one)
-        for i in self.target:
-            if i != one:
-                i['socket'].send(data)
+        try:
+            self.socket.send(data)
+            for i in self.target:
+                if i != one:
+                    i['socket'].send(data)
+        except BrokenPipeError as e:
+            print(e)
 class client(network):
     def start(self):
         print('it is client')
@@ -113,7 +117,10 @@ class client(network):
                 print('過久沒有連線')
     def send(self,s,mode=True,one=None):
         data = super().send(s,mode,one)
-        self.socket.send(data)
+        try:
+            self.socket.send(data)
+        except BrokenPipeError as e:
+            print(e)
 def begin(window,info):
     data = sheet.GetIP('IP')
     addr = data.search(info[0])

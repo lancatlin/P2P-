@@ -80,6 +80,8 @@ class server(network):
     def close(self):
         self.data.clear(self.room)
         #self.send('聊天室關閉',False)
+        for i in self.target:
+            i['socket'].close()
         super().close()
     def send(self,s,mode=True,one=None):
         data = super().send(s,mode)
@@ -108,13 +110,13 @@ class client(network):
     def close(self):
         self.client_data.clear(self.name)
         #self.send(self.name + '離開聊天室', False)
+        self.socket.close()
         super().close()
     def receive(self):
         self.socket.settimeout(20)
         while True:
             try:
                 data = self.socket.recv(1024)
-                self.socket.send(self.massege)
                 data = data.decode()
                 self.window.add_new(data)
             except socket.timeout:

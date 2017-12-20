@@ -31,6 +31,20 @@ class network:
             data=s
         data = data.encode('UTF-8')
         return data
+    def get_target(self,sheet,one=None):
+        if one != None:
+            i = sheet.search(one)
+            if i['wan'] == self.wan:
+                return i['lan'],i['port']
+            else:
+                return i['wan'],i['port']
+        target = sheet.get_all()
+        for i in target:
+            result = []
+            if i['wan'] == self.wan:
+                result.append((i['lan'],i['port']))
+            else:
+                result.append((i['wan'],i['port']))
 class server(network):
     def start(self):
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -47,14 +61,8 @@ class server(network):
                 thread.start()
                 self.target.append({'socket':new,'addr':addr,'thread':thread})
             except socket.timeout:
-                target = self.client_data.get_all()
-                for i in target:
-                    if i['wan'] == self.wan:
-                        print('send to ' + i['lan'])
-                        udp.sendto(self.massege, (i['lan'], i['port']))
-                    else:
-                        print('send to ' + i['wan'])
-                        udp.sendto(self.massege, (i['wan'], i['port']))
+                for i in self.get_target(self.client_data):
+                    udp.sendto(i)
     def receive(self,target):
         self.socket.settimeout(20)
         while True:
@@ -80,6 +88,7 @@ class client(network):
         print('it is client')
         self.client_data.set_IP(self.name,self.wan,self.lan,self.port)
         self.socket.settimeout(10)
+        target = self.get_target(self.data,self.room)
         while True:
             try:
                 self.socket.connect(target)
@@ -87,11 +96,7 @@ class client(network):
                 self.client_data.clear(self.name)
                 break
             except socket.timeout:
-                addr = self.data.search(self.room)
-                if addr['wan'] == self.wan:
-                    target = (addr['lan'],addr['port'])
-                else:
-                    target = (addr['wan'],addr['port'])
+                target = self.get_target(self.data,self.room)
                 print('嘗試連接到', target)
     def close(self):
         self.client_data.clear(self.name)

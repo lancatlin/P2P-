@@ -59,19 +59,20 @@ class server(network):
             try:
                 new,addr = self.socket.accept()
                 print(str(addr)+'已連接')
-                thread = threading.Thread(target=self.receive,args=(new,))
+                thread = threading.Thread(target=self.receive,args=({'socket':new,'addr':addr},))
                 thread.start()
-                self.target.append({'socket':new,'addr':addr,'thread':thread})
+                self.target.append({'socket':new,'addr':addr})
             except socket.timeout:
                 addr = self.get_target(self.client_data)
                 for i in addr:
                     udp.sendto(self.massege,i)
     def receive(self,target):
         self.socket.settimeout(60)
-        target.send(self.massege)
+        addr = target['socket']
+        addr.send(self.massege)
         while True:
             try:
-                data = target.recv(1024)
+                data = addr.recv(1024)
                 data = data.decode()
                 self.window.add_new(data)
                 self.send(data, mode=False, one=target)
@@ -79,7 +80,7 @@ class server(network):
                 print('許久沒有連線')
     def close(self):
         self.data.clear(self.room)
-        #self.send('聊天室關閉',False)
+        self.send('聊天室關閉',False)
         for i in self.target:
             i['socket'].close()
         super().close()
@@ -109,7 +110,7 @@ class client(network):
         self.receive()
     def close(self):
         self.client_data.clear(self.name)
-        #self.send(self.name + '離開聊天室', False)
+        self.send(self.name + '離開聊天室', False)
         self.socket.close()
         super().close()
     def receive(self):

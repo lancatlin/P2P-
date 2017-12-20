@@ -21,7 +21,7 @@ class network:
         return s.getsockname()[0]
     def close(self):
         self.window.destroy()
-    def send(self,s,mode=True,one=None):
+    def send(self,s,mode=True):
         if mode:
             now = time.strftime("[%H-%M]")
             data = now + s
@@ -65,28 +65,25 @@ class server(network):
             except socket.timeout:
                 addr = self.get_target(self.client_data)
                 for i in addr:
-                    udp.sendto(self.data,i)
+                    udp.sendto(self.massege,i)
     def receive(self,target):
-        self.socket.settimeout(20)
+        self.socket.settimeout(60)
         target.send(self.massege)
         while True:
             try:
                 data = target.recv(1024)
-                target.send(self.massege)
                 data = data.decode()
                 self.window.add_new(data)
                 self.send(data, mode=False, one=target)
             except socket.timeout:
-                self.target.remove(target)
-                target.close()
+                print('許久沒有連線')
     def close(self):
         self.data.clear(self.room)
         #self.send('聊天室關閉',False)
         super().close()
     def send(self,s,mode=True,one=None):
-        data = super().send(s,mode,one)
+        data = super().send(s,mode)
         try:
-            self.socket.send(data)
             for i in self.target:
                 if i != one:
                     i['socket'].send(data)
@@ -123,7 +120,7 @@ class client(network):
             except socket.timeout:
                 print('過久沒有連線')
     def send(self,s,mode=True,one=None):
-        data = super().send(s,mode,one)
+        data = super().send(s,mode)
         try:
             self.socket.send(data)
         except BrokenPipeError as e:

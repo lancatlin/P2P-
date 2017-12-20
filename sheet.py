@@ -24,11 +24,10 @@ class GetIP:
     def clear(self,name):
         all = self.sheet.get_all_records()
         all_len = len(all)
-        print(all,all_len,name)
+        print('clear')
         for i in range(all_len):
             if all[i]['Name'] == name:
                 self.sheet.delete_row(i+2)
-                print(i+1)
                 break
     def get_all(self):
         return self.sheet.get_all_records()

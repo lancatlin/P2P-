@@ -65,7 +65,7 @@ class server(network):
             except socket.timeout:
                 addr = self.get_target(self.client_data)
                 for i in addr:
-                    udp.sendto(i)
+                    udp.sendto(self.data,i)
     def receive(self,target):
         self.socket.settimeout(20)
         while True:
@@ -105,6 +105,7 @@ class client(network):
             except socket.timeout:
                 target = self.get_target(self.data,self.room)
                 print('嘗試連接到', target)
+        self.receive()
     def close(self):
         self.client_data.clear(self.name)
         #self.send(self.name + '離開聊天室', False)

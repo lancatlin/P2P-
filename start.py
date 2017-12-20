@@ -32,7 +32,7 @@ class start(Tk):
         info = self.roomentry.get(),self.nameentry.get()
         self.window = window.window(info)
         self._print_('準備連接：'+self.roomentry.get()+'中...')
-        self.net = NetWork.begin(window,info)
+        self.net = NetWork.begin(self.window,info)
         self.window.setIp(self.net)
         self._print_('已連接')
         main = threading.Thread(target=self.net.start)

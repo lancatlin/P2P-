@@ -38,13 +38,14 @@ class network:
                 return i['lan'],i['port']
             else:
                 return i['wan'],i['port']
-        target = sheet.get_all()
-        for i in target:
-            result = []
-            if i['wan'] == self.wan:
-                result.append((i['lan'],i['port']))
-            else:
-                result.append((i['wan'],i['port']))
+        else:
+            target = sheet.get_all()
+            for i in target:
+                result = []
+                if i['wan'] == self.wan:
+                    result.append((i['lan'],i['port']))
+                else:
+                    result.append((i['wan'],i['port']))
 class server(network):
     def start(self):
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -124,7 +125,7 @@ class client(network):
 def begin(window,info):
     data = sheet.GetIP('IP')
     addr = data.search(info[0])
-    if addr == []:
+    if addr == None:
         return server(window,info)
     else:
         return client(window,info)

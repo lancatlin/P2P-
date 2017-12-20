@@ -15,7 +15,7 @@ class GetIP:
         all = self.all
         for i in all:
             if i['Name'] == name:
-                return {'wan':i['wan'],'lan':i['lan'],'port':i['port']}
+                return i
         return None
     def set_IP(self,name,wan,lan,port):
         self.sheet.append_row([name,wan,lan,port])

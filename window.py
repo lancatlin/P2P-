@@ -59,5 +59,5 @@ class window(Tk):
     def add_new(self,s):
         self.talktext.insert(END, '\n' + s)
         self.talktext.see(END)
-        self.sound.play('auto')
+        #self.sound.play('auto')
         print(s)

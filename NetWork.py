@@ -58,7 +58,7 @@ class server(network):
         while True:
             try:
                 new,addr = self.socket.accept()
-                print(addr+'已連接')
+                print(str(addr)+'已連接')
                 thread = threading.Thread(target=self.receive,args=(new,))
                 thread.start()
                 self.target.append({'socket':new,'addr':addr,'thread':thread})
@@ -68,9 +68,11 @@ class server(network):
                     udp.sendto(self.data,i)
     def receive(self,target):
         self.socket.settimeout(20)
+        target.send(self.massege)
         while True:
             try:
-                data,addr = target.recv(1024)
+                data = target.recv(1024)
+                target.send(self.massege)
                 data = data.decode()
                 self.window.add_new(data)
                 self.send(data, mode=False, one=target)
@@ -114,7 +116,8 @@ class client(network):
         self.socket.settimeout(20)
         while True:
             try:
-                data, addr = self.socket.recv(1024)
+                data = self.socket.recv(1024)
+                self.socket.send(self.massege)
                 data = data.decode()
                 self.window.add_new(data)
             except socket.timeout:

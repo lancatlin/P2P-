@@ -21,14 +21,16 @@ class network:
         return s.getsockname()[0]
     def close(self):
         self.window.destroy()
-    def send(self,s,mode=True):
-        if mode:
+    def send(self,s,mode=0):
+        if mode == 0:
             now = time.strftime("[%H-%M]")
             data = now + s
             self.window.add_new('<'+self.name+'>'+data)
-            data = '<'+self.name+'>'+data
+            data = '@<'+self.name+'>'+data
+        elif mode == 1:
+            data='@'+s
         else:
-            data=s
+            data = s
         data = data.encode('UTF-8')
         return data
     def get_target(self,sheet,one=None):
@@ -47,6 +49,23 @@ class network:
                 else:
                     result.append((i['wan'],i['port']))
             return target
+    def receive(self,sock):
+        try:
+            data = sock.recv(1024)
+            data = data.decode()
+            if data == 'exit' or data == '':
+                print('結束連線' + str(sock))
+                sock.close()
+                return False
+            elif data[0] == '@':
+                return data
+            else:
+                print(data)
+        except socket.timeout:
+            print('許久沒有連線')
+            sock.close()
+            print('因超時而結束連線')
+            return False
 class server(network):
     def start(self):
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -71,42 +90,24 @@ class server(network):
         addr = target['socket']
         addr.send(self.massege)
         while True:
-            t = 0
-            try:
-                data = addr.recv(1024)
-                data = data.decode()
-                if data == 'exit':
-                    addr.close()
-                    print('結束連線' + str(target['addr']))
-                    break
-                else:
-                    self.window.add_new(data)
-                    self.send(data, mode=False, one=target)
-                t = 0
-            except socket.timeout:
-                print('許久沒有連線')
-                t += 1
-                if t >= 5:
-                    addr.close()
-                    print('結束連線'+target['addr'])
-                    break
+            mode = super().receive(addr)
+            if not mode:
+                break
+            elif mode != None:
+                self.window.add_new(mode)
+                self.send(mode,2,target)
     def close(self):
         self.data.clear(self.room)
-        self.send('聊天室關閉',False)
-        self.send('exit', False)
+        self.send('聊天室關閉',1)
+        self.send('exit', 1)
         for i in self.target:
             i['socket'].close()
         super().close()
-    def send(self,s,mode=True,one=None):
+    def send(self,s,mode=0,one=None):
         data = super().send(s,mode)
-        i = 0
-        try:
-            for i in self.target:
-                if i != one:
-                    i['socket'].send(data)
-        except BrokenPipeError:
-            print('catch error')
-            i['socket'].close()
+        for i in self.target:
+            if i != one:
+                i['socket'].send(data)
 class client(network):
     def start(self):
         print('it is client')
@@ -122,35 +123,22 @@ class client(network):
             except socket.timeout:
                 target = self.get_target(self.data,self.room)
                 print('嘗試連接到', target)
-        self.receive()
+        self.receive(self.socket)
     def close(self):
         self.client_data.clear(self.name)
-        self.send(self.name + '離開聊天室', False)
-        self.send('exit',False)
+        self.send(self.name + '離開聊天室', 1)
+        self.send('exit', 0)
         self.socket.close()
         super().close()
-    def receive(self):
-        self.socket.settimeout(60)
+    def receive(self,sock):
+        sock.settimeout(60)
         while True:
-            t = 0
-            try:
-                data = self.socket.recv(1024)
-                data = data.decode()
-                if data == 'exit':
-                    self.socket.close()
-                    print('結束連線' + self.socket.getpeername())
-                    break
-                else:
-                    self.window.add_new(data)
-                t = 0
-            except socket.timeout:
-                print('過久沒有連線')
-                t += 1
-                if t >= 5:
-                    self.socket.close()
-                    print('因超時而結束連線')
-                    break
-    def send(self,s,mode=True,one=None):
+            result = super().receive(sock)
+            if not result:
+                break
+            elif result != None:
+                self.window.add_new(result)
+    def send(self,s,mode=0,one=None):
         data = super().send(s,mode)
         try:
             self.socket.send(data)

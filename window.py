@@ -57,7 +57,7 @@ class window(Tk):
         print(s)
         self.info.set(s)
     def add_new(self,s):
-        self.talktext.insert(END, '\n' + s)
+        self.talktext.insert(END, '\n' + s[1::])
         self.talktext.see(END)
         #self.sound.play('auto')
         print(s)

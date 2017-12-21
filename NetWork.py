@@ -25,7 +25,7 @@ class network:
             now = time.strftime("[%H-%M]")
             data = now + s
             self.window.add_new('<'+self.name+'>'+data)
-            data = '@<'+self.name+'>'+data
+            data = '@'+self.name+'>'+data
         elif mode == 1:
             data='@'+s
         else:
@@ -52,7 +52,7 @@ class network:
         try:
             data = sock.recv(1024)
             data = data.decode()
-            if data == 'exit':
+            if data in ['exit','']:
                 print('結束連線' + str(sock))
                 sock.close()
                 return 'close'
@@ -64,6 +64,9 @@ class network:
             sock.close()
             print('因超時而結束連線'+str(sock))
             return 'close'
+        except OSError:
+            sock.close()
+            print('套接字以斷開連線'+str(sock))
 class server(network):
     def __init__(self,window,info):
         super().__init__(window,info)
@@ -75,6 +78,7 @@ class server(network):
         udp.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         udp.bind((self.lan, self.port))
         self.socket.settimeout(10)
+        self.window.add_new('創建聊天室')
         while True:
             try:
                 new,addr = self.socket.accept()
@@ -88,7 +92,7 @@ class server(network):
                     udp.sendto(self.massege,i)
     def receive(self,target):
         self.socket.settimeout(10)
-        target.send(self.massege)
+        self.send(self.name+'加入聊天室',1)
         while True:
             mode = super().receive(target)
             if not mode:
@@ -108,7 +112,10 @@ class server(network):
         data = super().send(s,mode)
         for i in self.target:
             if i != one:
-                i.send(data)
+                try:
+                    i.send(data)
+                except OSError:
+                    print('套接字無連接')
 class client(network):
     def start(self):
         print('it is client')

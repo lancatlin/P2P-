@@ -52,12 +52,14 @@ class window(Tk):
     def enter(self):
         self.net.send(self.inputentry.get())
         self.inputentry.delete(0,END)
-        self.record.write()
     def _print_(self,s):
         print(s)
         self.info.set(s)
     def add_new(self,s):
-        self.talktext.insert(END, '\n' + s[1::])
+        if s[0] == '@':
+            s = s[1::]
+        self.talktext.insert(END, '\n' + s)
         self.talktext.see(END)
         #self.sound.play('auto')
         print(s)
+        self.record.write()

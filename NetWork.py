@@ -41,30 +41,29 @@ class network:
                 return i['wan'],i['port']
         else:
             target = sheet.get_all()
+            result = []
             for i in target:
-                result = []
                 if i['wan'] == self.wan:
                     result.append((i['lan'],i['port']))
                 else:
                     result.append((i['wan'],i['port']))
-            return target
+            return result
     def receive(self,sock):
         try:
             data = sock.recv(1024)
             data = data.decode()
-            if data == 'exit' or data == '':
+            if data == 'exit':
                 print('結束連線' + str(sock))
                 sock.close()
-                return False
+                return 'close'
             elif data[0] == '@':
                 return data
             else:
                 print(data)
         except socket.timeout:
-            print('許久沒有連線')
             sock.close()
-            print('因超時而結束連線')
-            return False
+            print('因超時而結束連線'+str(sock))
+            return 'close'
 class server(network):
     def __init__(self,window,info):
         super().__init__(window,info)
@@ -136,7 +135,8 @@ class client(network):
         sock.settimeout(60)
         while True:
             result = super().receive(sock)
-            if not result:
+            if result == 'close':
+                print('break')
                 break
             elif result != None:
                 self.window.add_new(result)
@@ -144,8 +144,8 @@ class client(network):
         data = super().send(s,mode)
         try:
             self.socket.send(data)
-        except BrokenPipeError as e:
-            print(e)
+        except OSError:
+            print('發送錯誤：套接字無連線')
             self.socket.close()
 def begin(window,info):
     data = sheet.GetIP('IP')

@@ -11,7 +11,6 @@ class network:
         self.lan = self.get_LAN()
         self.port = randint(50000,60000)
         self.wan = ipgetter.myip()
-        self.target = []
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((self.lan,self.port))
@@ -67,31 +66,34 @@ class network:
             print('因超時而結束連線')
             return False
 class server(network):
+    def __init__(self,window,info):
+        super().__init__(window,info)
+        self.target = []
+        self.data.set_IP(self.room, self.wan, self.lan, self.port)
+        self.socket.listen(5)
     def start(self):
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         udp.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         udp.bind((self.lan, self.port))
-        self.data.set_IP(self.room,self.wan,self.lan,self.port)
-        self.socket.listen(5)
         self.socket.settimeout(10)
         while True:
             try:
                 new,addr = self.socket.accept()
                 print(str(addr)+'已連接')
-                thread = threading.Thread(target=self.receive,args=({'socket':new,'addr':addr},))
+                thread = threading.Thread(target=self.receive,args=(new,))
                 thread.start()
-                self.target.append({'socket':new,'addr':addr})
+                self.target.append(new)
             except socket.timeout:
                 addr = self.get_target(self.client_data)
                 for i in addr:
                     udp.sendto(self.massege,i)
     def receive(self,target):
         self.socket.settimeout(10)
-        addr = target['socket']
-        addr.send(self.massege)
+        target.send(self.massege)
         while True:
-            mode = super().receive(addr)
+            mode = super().receive(target)
             if not mode:
+                self.target.remove(target)
                 break
             elif mode != None:
                 self.window.add_new(mode)
@@ -101,13 +103,13 @@ class server(network):
         self.send('聊天室關閉',1)
         self.send('exit', 2)
         for i in self.target:
-            i['socket'].close()
+            i.close()
         super().close()
     def send(self,s,mode=0,one=None):
         data = super().send(s,mode)
         for i in self.target:
             if i != one:
-                i['socket'].send(data)
+                i.send(data)
 class client(network):
     def start(self):
         print('it is client')

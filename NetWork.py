@@ -99,7 +99,7 @@ class server(network):
     def close(self):
         self.data.clear(self.room)
         self.send('聊天室關閉',1)
-        self.send('exit', 1)
+        self.send('exit', 2)
         for i in self.target:
             i['socket'].close()
         super().close()
@@ -127,7 +127,7 @@ class client(network):
     def close(self):
         self.client_data.clear(self.name)
         self.send(self.name + '離開聊天室', 1)
-        self.send('exit', 0)
+        self.send('exit', 2)
         self.socket.close()
         super().close()
     def receive(self,sock):

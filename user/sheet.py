@@ -12,7 +12,7 @@ class GetIP:
         self.sheet = gc.open(sheet).sheet1
         self.all = self.sheet.get_all_records()
     def search(self,name):
-        all = self.all
+        all = self.get_all()
         for i in all:
             if i['Name'] == name:
                 return i

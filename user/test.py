@@ -1,5 +1,5 @@
 import sheet
-import NetWork
+import network
 
 
 class test:
@@ -14,6 +14,7 @@ class test:
         ip_sheet.clear('test')
         i = ip_sheet.search('test')
         if i is not None:
+            print(i)
             return '刪除失敗'
         return '測試成功'
 

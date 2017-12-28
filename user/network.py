@@ -91,7 +91,7 @@ class server(network):
         while True:
             try:
                 new, addr = self.socket.accept()
-                print('%s已連接' % addr)
+                print('%s已連接' % str(addr))
                 thread = threading.Thread(target=self.receive, args=(new,))
                 thread.start()
                 self.target.append(new)

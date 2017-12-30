@@ -38,9 +38,10 @@ class ServerNet:
                     #如果有訊息
                     if data:
                         data = data.decode()
+                        mode = re.match('[^:]+', data).group()
                         #對方要查詢room
-                        if re.match('room:', data):
-                            room = data[5::]
+                        if mode == 'room':
+                            room = re.search('(?<=:).+', data).group()
                             print(room)
                             for i in self.ip_list:
                                 if i['name'] == room:
@@ -49,13 +50,27 @@ class ServerNet:
                             else:
                                 self.send(s,'None')
                         #如果對方要設定
-                        elif re.match('set:', data):
+                        elif mode == 'set':
                             print('server:set')
-                            info = data[4::].split(',')
-                            new_one = {'name':info[0], 'wan':info[1], 'lan':info[2], 'port':info[3]}
+                            info = re.match(
+                                '(?P<mode>[^:,]+):(?P<name>[^:,]+),(?P<wan>[^:,]+),(?P<lan>[^:,]+),(?P<port>[^:,]+)',
+                                data)
+                            new_one = info.groupdict()
                             print(new_one)
                             self.ip_list.append(new_one)
                             self.send(s, 'set down')
+                        elif mode == 'connect':
+                            info = re.match(
+                                '(?P<mode>[^:,]+):(?P<name>[^:,]+),(?P<wan>[^:,]+),(?P<lan>[^:,]+),(?P<port>[^:,]+)',
+                                data).groupdict()
+                            print('connect to %s' % info['name'])
+                            for i in self.ip_list:
+                                if i['name'] == room:
+                                    self.send(s,','.join([i['wan'], i['lan'], i['port']]))
+                                    break
+                            else:
+                                self.send(s,'None')
+
                     #沒訊息，關閉連接
                     else:
                         print('close')

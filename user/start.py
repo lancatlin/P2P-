@@ -32,7 +32,7 @@ class start(Tk):
 
         self.mainloop()
     def begin(self):
-        info = self.roomentry.get(),self.nameentry.get()
+        info = self.roomentry.get(), self.nameentry.get()
         self.window = window.window(info)
         self._print_('準備連接：'+self.roomentry.get()+'中...')
         self.net = netWork.begin(self.window, info)

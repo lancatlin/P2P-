@@ -1,18 +1,18 @@
 import socket
 import time
 import ipgetter
+import connect
 from multiprocessing import Process
 import threading
-from user import sheet
 from random import randint
+import queue
 
 class network:
-    def __init__(self,window,info):
+    def __init__(self, info, c):
         self.room,self.name = info[0],info[1]
         self.massege = ('my name is ' + self.name + ' in room:' + self.room).encode()
-        self.window = window
-        self.data = sheet.GetIP('IP')
-        self.client_data = sheet.GetIP('client')
+        self.to_print = queue.Queue()
+        self.data = c
         self.lan = self.get_LAN()
         self.port = randint(50000,60000)
         self.wan = ipgetter.myip()
@@ -22,17 +22,17 @@ class network:
 
     def get_LAN(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8",30000))
+        s.connect(("8.8.8.8", 30000))
         return s.getsockname()[0]
 
     def close(self):
-        self.window.destroy()
+        pass
 
-    def send(self,s,mode=0):
+    def send(self, s, mode=0):
         if mode == 0:
             now = time.strftime("[%H-%M]")
             data = now + s
-            self.window.add_new('<'+self.name+'>'+data)
+            self.to_print.put('<'+self.name+'>'+data)
             data = '@'+self.name+'>'+data
         elif mode == 1:
             data='@'+s
@@ -41,22 +41,12 @@ class network:
         data = data.encode('UTF-8')
         return data
 
-    def get_target(self,sheet,one=None):
-        if one != None:
-            i = sheet.search(one)
-            if i['wan'] == self.wan:
-                return i['lan'],i['port']
-            else:
-                return i['wan'],i['port']
+    def get_target(self, info):
+        result = []
+        if info['wan'] == self.wan:
+            return info['lan'], int(info['port'])
         else:
-            target = sheet.get_all()
-            result = []
-            for i in target:
-                if i['wan'] == self.wan:
-                    result.append((i['lan'],i['port']))
-                else:
-                    result.append((i['wan'],i['port']))
-            return result
+            return info['wan'], int(info['port'])
 
     def receive(self,sock):
         try:
@@ -78,10 +68,11 @@ class network:
             sock.close()
             print('套接字以斷開連線'+str(sock))
 class Server(network):
-    def __init__(self,window,info):
-        super().__init__(window,info)
+    def __init__(self, info, c):
+        super().__init__(info, c)
         self.target = []
-        self.data.set_IP(self.room, self.wan, self.lan, self.port)
+        self.data.set(self.room, self.wan, self.lan, self.port)
+        Process(target=self.data.wait_connect).start()
         self.socket.listen(5)
 
     def start(self):
@@ -89,7 +80,7 @@ class Server(network):
         udp.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         udp.bind((self.lan, self.port))
         self.socket.settimeout(10)
-        self.window.add_new('創建聊天室')
+        self.to_print.put('創建聊天室')
         while True:
             try:
                 new, addr = self.socket.accept()
@@ -98,9 +89,12 @@ class Server(network):
                 thread.start()
                 self.target.append(new)
             except socket.timeout:
-                addr = self.get_target(self.client_data)
-                for i in addr:
-                    udp.sendto(self.massege, i)
+                try:
+                    addr = self.data.info.get(False)
+                    addr = self.get_target(addr)
+                    udp.sendto(self.massege, addr)
+                except queue.Empty:
+                    print('尚未有新連線')
 
     def receive(self,target):
         self.socket.settimeout(10)
@@ -111,8 +105,8 @@ class Server(network):
                 self.target.remove(target)
                 break
             elif mode is not None:
-                self.window.add_new(mode)
-                self.send(mode,2,target)
+                self.to_print.put(mode)
+                self.send(mode, 2, target)
 
     def close(self):
         self.data.clear(self.room)
@@ -122,8 +116,8 @@ class Server(network):
             i.close()
         super().close()
 
-    def send(self,s,mode=0,one=None):
-        data = super().send(s,mode)
+    def send(self, s, mode=0, one=None):
+        data = super().send(s, mode)
         for i in self.target:
             if i != one:
                 try:
@@ -135,22 +129,20 @@ class Server(network):
 class Client(network):
     def start(self):
         print('it is client')
-        self.client_data.set_IP(self.name,self.wan,self.lan,self.port)
         self.socket.settimeout(10)
-        target = self.get_target(self.data,self.room)
         while True:
+            target = self.get_target(self.data.search(self.room))
+            print(target)
             try:
                 self.socket.connect(target)
                 print('已連接'+str(target))
-                self.client_data.clear(self.name)
                 break
             except socket.timeout:
-                target = self.get_target(self.data,self.room)
+                self.data.connect(self.room, self.wan, self.lan, self.port)
                 print('嘗試連接到', target)
         self.receive(self.socket)
 
     def close(self):
-        self.client_data.clear(self.name)
         self.send(self.name + '離開聊天室', 1)
         self.send('exit', 2)
         self.socket.close()
@@ -163,10 +155,10 @@ class Client(network):
             if result == 'close':
                 print('break')
                 break
-            elif result != None:
-                self.window.add_new(result)
+            elif result is not None:
+                self.to_print.put(result)
 
-    def send(self,s,mode=0,one=None):
+    def send(self, s, mode=0, one=None):
         data = super().send(s,mode)
         try:
             self.socket.send(data)
@@ -175,10 +167,10 @@ class Client(network):
             self.socket.close()
 
 
-def begin(window,info):
-    data = sheet.GetIP('IP')
-    addr = data.search(info[0])
-    if addr is None:
-        return server(window,info)
+def begin(info, port):
+    c = connect.Connect(port)
+    mode = c.search(info[0])
+    if mode is None:
+        return Server(info, c)
     else:
-        return client(window,info)
+        return Client(info, c)

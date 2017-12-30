@@ -72,6 +72,7 @@ class ServerNet:
                                 target = self.ip_list[info['name']]['sock']
                                 ms = 'connect:'+','.join([info['wan'], info['lan'], info['port']])
                                 self.send(target, ms)
+                                s.send('down')
                             except KeyError:
                                 self.send(s, 'error')
                                 print('error: 沒有此聊天室')

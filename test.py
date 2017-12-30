@@ -1,6 +1,9 @@
 from user import connect
 import socket
+import time
 from Server import network
+from user import netWork
+from random import randint
 from multiprocessing import Process
 
 
@@ -21,6 +24,20 @@ class Test:
         print(s.recv(1024))
         s.close()
 
+    def test_run(self):
+        port = randint(40000, 50000)
+        s = network.ServerNet(port)
+        Process(target=s.start).start()
+        time.sleep(2)
+        for i in range(2):
+            self.client(port)
+
+    def client(self, port):
+        server = netWork.begin(('room', str(randint(1, 10))), port)
+        Process(target=server.start).start()
+        print('new Process')
+        time.sleep(4)
+
 
 t = Test()
-t.test_server()
+t.test_run()

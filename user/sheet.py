@@ -1,5 +1,7 @@
 from oauth2client.service_account import ServiceAccountCredentials as SAC
-import gspread,key
+import gspread
+from user import key
+
 
 class GetIP:
     def __init__(self,sheet):

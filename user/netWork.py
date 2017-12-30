@@ -1,4 +1,5 @@
-import socket,sheet,ipgetter,time,threading
+import socket, ipgetter,time,threading
+from user import sheet
 from random import randint
 
 class network:
@@ -81,7 +82,7 @@ class server(network):
         self.window.add_new('創建聊天室')
         while True:
             try:
-                new,addr = self.socket.accept()
+                new, addr = self.socket.accept()
                 print(str(addr)+'已連接')
                 thread = threading.Thread(target=self.receive,args=(new,))
                 thread.start()
@@ -89,7 +90,7 @@ class server(network):
             except socket.timeout:
                 addr = self.get_target(self.client_data)
                 for i in addr:
-                    udp.sendto(self.massege,i)
+                    udp.sendto(self.massege, i)
     def receive(self,target):
         self.socket.settimeout(10)
         self.send(self.name+'加入聊天室',1)

@@ -1,5 +1,5 @@
-import sheet
-import NetWork
+from user import sheet
+import socket
 
 
 class test:
@@ -17,6 +17,11 @@ class test:
             return '刪除失敗'
         return '測試成功'
 
+    def test_server(self):
+        s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        s.connect(('127.0.0.1', 55555))
+        s.send('hello')
+        s.close()
 
 t = test()
 print(t.test_sheet('IP'))

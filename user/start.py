@@ -1,5 +1,8 @@
 from tkinter import *
-import window,NetWork,threading,time
+import threading
+from user import window, netWork
+
+
 class start(Tk):
     def __init__(self):
         super().__init__()
@@ -32,7 +35,7 @@ class start(Tk):
         info = self.roomentry.get(),self.nameentry.get()
         self.window = window.window(info)
         self._print_('準備連接：'+self.roomentry.get()+'中...')
-        self.net = NetWork.begin(self.window,info)
+        self.net = netWork.begin(self.window, info)
         self.window.setIp(self.net)
         self._print_('已連接')
         main = threading.Thread(target=self.net.start)

@@ -1,6 +1,8 @@
 #-*- coding: utf-8 -*-
 from tkinter import *
-import record,sound
+import sound
+from user import record
+
 
 class window(Tk):
     def __init__(self,info):

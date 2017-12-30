@@ -1,6 +1,7 @@
 from user import connect
 import socket
 import time
+import window
 from Server import network
 from user import netWork
 from random import randint
@@ -25,12 +26,9 @@ class Test:
         s.close()
 
     def test_run(self):
-        port = randint(40000, 50000)
+        port = 55558
         s = network.ServerNet(port)
         Process(target=s.start).start()
-        time.sleep(2)
-        for i in range(2):
-            self.client(port)
 
     def client(self, port):
         server = netWork.begin(('room', str(randint(1, 10))), port)
@@ -38,6 +36,18 @@ class Test:
         print('new Process')
         time.sleep(4)
 
+    def test_begin(self, name):
+        info = 'room', name
+        self.window = window.window(info)
+        print('準備連接中')
+        self.net = netWork.begin(info)
+        self.window.setIp(self.net)
+        main = Process(target=self.net.start)
+        main.start()
+        self.window.mainloop()
+
 
 t = Test()
-t.test_run()
+Process(target=t.test_run).start()
+Process(target=t.test_begin, args = ('server', )).start()
+t.test_begin('client')

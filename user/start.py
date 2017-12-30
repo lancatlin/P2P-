@@ -31,19 +31,23 @@ class start(Tk):
         Label(self, textvariable=self.info, width=25,font=ft(15)).grid(row=rows, columnspan=5, sticky=N, pady=15)
 
         self.mainloop()
+
     def begin(self):
         info = self.roomentry.get(), self.nameentry.get()
         self.window = window.window(info)
         self._print_('準備連接：'+self.roomentry.get()+'中...')
         self.net = netWork.begin(self.window, info)
         self.window.setIp(self.net)
-        self._print_('已連接')
         main = threading.Thread(target=self.net.start)
+        self._print_('已連接')
         main.setDaemon(True)
         main.start()
         self.destroy()
         self.window.mainloop()
-    def _print_(self,s):
+
+    def _print_(self, s):
         print(s)
         self.info.set(s)
+
+
 start()

@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 from tkinter import *
 import sound
+import queue
 from user import record
 
 
@@ -47,21 +48,30 @@ class window(Tk):
         self.info.set('歡迎使用P2P')
         #Label(self, textvariable=self.info, width=25, font=ft(20)).grid(row=rows, columnspan=5, sticky=N, pady=15)
 
-    def setIp(self,n):                  #設定self.net，將離開的函數指派給net.close
+    def setIp(self, n):                  #設定self.net，將離開的函數指派給net.close
         self.net = n
         self.protocol("WM_DELETE_WINDOW", self.net.close)
         self._print_('已連接')
     def enter(self):
         self.net.send(self.inputentry.get())
-        self.inputentry.delete(0,END)
+        self.inputentry.delete(0, END)
     def _print_(self,s):
         print(s)
         self.info.set(s)
-    def add_new(self,s):
-        if s[0] == '@':
-            s = s[1::]
-        self.talktext.insert(END, '\n' + s)
-        self.talktext.see(END)
-        #self.sound.play('auto')
-        print(s)
-        self.record.write()
+    def add_new(self):
+        try:
+            s = self.net.to_print.get(False)
+            if s[0] == '@':
+                s = s[1::]
+            self.talktext.insert(END, '\n' + s)
+            self.talktext.see(END)
+            #self.sound.play('auto')
+            print(s)
+            self.record.write()
+        except queue.Empty:
+            pass
+    def mainloop(self, n=0):
+        while True:
+            self.add_new()
+            super().update_idletasks()
+            super().update()

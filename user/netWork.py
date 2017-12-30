@@ -109,7 +109,6 @@ class Server(network):
                 self.send(mode, 2, target)
 
     def close(self):
-        self.data.clear(self.room)
         self.send('聊天室關閉',1)
         self.send('exit', 2)
         for i in self.target:
@@ -167,8 +166,8 @@ class Client(network):
             self.socket.close()
 
 
-def begin(info, port):
-    c = connect.Connect(port)
+def begin(info):
+    c = connect.Connect()
     mode = c.search(info[0])
     if mode is None:
         return Server(info, c)

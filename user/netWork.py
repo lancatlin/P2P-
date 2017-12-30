@@ -1,4 +1,8 @@
-import socket, ipgetter,time,threading
+import socket
+import time
+import ipgetter
+from multiprocessing import Process
+import threading
 from user import sheet
 from random import randint
 
@@ -15,12 +19,15 @@ class network:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((self.lan,self.port))
+
     def get_LAN(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8",30000))
         return s.getsockname()[0]
+
     def close(self):
         self.window.destroy()
+
     def send(self,s,mode=0):
         if mode == 0:
             now = time.strftime("[%H-%M]")
@@ -33,6 +40,7 @@ class network:
             data = s
         data = data.encode('UTF-8')
         return data
+
     def get_target(self,sheet,one=None):
         if one != None:
             i = sheet.search(one)
@@ -49,6 +57,7 @@ class network:
                 else:
                     result.append((i['wan'],i['port']))
             return result
+
     def receive(self,sock):
         try:
             data = sock.recv(1024)
@@ -68,12 +77,13 @@ class network:
         except OSError:
             sock.close()
             print('套接字以斷開連線'+str(sock))
-class server(network):
+class Server(network):
     def __init__(self,window,info):
         super().__init__(window,info)
         self.target = []
         self.data.set_IP(self.room, self.wan, self.lan, self.port)
         self.socket.listen(5)
+
     def start(self):
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         udp.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -91,6 +101,7 @@ class server(network):
                 addr = self.get_target(self.client_data)
                 for i in addr:
                     udp.sendto(self.massege, i)
+
     def receive(self,target):
         self.socket.settimeout(10)
         self.send(self.name+'加入聊天室',1)
@@ -99,9 +110,10 @@ class server(network):
             if not mode:
                 self.target.remove(target)
                 break
-            elif mode != None:
+            elif mode is not None:
                 self.window.add_new(mode)
                 self.send(mode,2,target)
+
     def close(self):
         self.data.clear(self.room)
         self.send('聊天室關閉',1)
@@ -109,6 +121,7 @@ class server(network):
         for i in self.target:
             i.close()
         super().close()
+
     def send(self,s,mode=0,one=None):
         data = super().send(s,mode)
         for i in self.target:
@@ -117,7 +130,9 @@ class server(network):
                     i.send(data)
                 except OSError:
                     print('套接字無連接')
-class client(network):
+
+
+class Client(network):
     def start(self):
         print('it is client')
         self.client_data.set_IP(self.name,self.wan,self.lan,self.port)
@@ -133,12 +148,14 @@ class client(network):
                 target = self.get_target(self.data,self.room)
                 print('嘗試連接到', target)
         self.receive(self.socket)
+
     def close(self):
         self.client_data.clear(self.name)
         self.send(self.name + '離開聊天室', 1)
         self.send('exit', 2)
         self.socket.close()
         super().close()
+
     def receive(self,sock):
         sock.settimeout(60)
         while True:
@@ -148,6 +165,7 @@ class client(network):
                 break
             elif result != None:
                 self.window.add_new(result)
+
     def send(self,s,mode=0,one=None):
         data = super().send(s,mode)
         try:
@@ -155,10 +173,12 @@ class client(network):
         except OSError:
             print('發送錯誤：套接字無連線')
             self.socket.close()
+
+
 def begin(window,info):
     data = sheet.GetIP('IP')
     addr = data.search(info[0])
-    if addr == None:
+    if addr is None:
         return server(window,info)
     else:
         return client(window,info)

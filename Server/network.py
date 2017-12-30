@@ -10,7 +10,7 @@ class ServerNet:
         address = ('127.0.0.1', port)
         self.socket.bind(address)
         self.socket.listen(5)
-        self.ip_list = []
+        self.ip_list = {}
         self.inputs = [self.socket]
         self.outputs = []
         self.messange = {}
@@ -31,7 +31,6 @@ class ServerNet:
                     print(address)
                     self.inputs.append(new)
                     self.messange[new] = queue.Queue()
-                    self.send(new, 'get it')
                 #從已知的連接發送過來，接收資料
                 else:
                     data = s.recv(byte_long)
@@ -40,37 +39,42 @@ class ServerNet:
                         data = data.decode()
                         mode = re.match('[^:]+', data).group()
                         #對方要查詢room
+
                         if mode == 'room':
                             room = re.search('(?<=:).+', data).group()
                             print(room)
-                            for i in self.ip_list:
-                                if i['name'] == room:
-                                    self.send(s,','.join([i['wan'], i['lan'], i['port']]))
-                                    break
-                            else:
-                                self.send(s,'None')
+                            try:
+                                info = self.ip_list[room]
+                                self.send(s, 'room:'+','.join([info['wan'], info['lan'], info['port']]))
+                            except KeyError:
+                                self.send(s, 'None')
                         #如果對方要設定
                         elif mode == 'set':
                             print('server:set')
                             info = re.match(
                                 '(?P<mode>[^:,]+):(?P<name>[^:,]+),(?P<wan>[^:,]+),(?P<lan>[^:,]+),(?P<port>[^:,]+)',
-                                data)
-                            new_one = info.groupdict()
-                            print(new_one)
-                            self.ip_list.append(new_one)
+                                data).groupdict()
+                            print(info)
+                            self.ip_list[info['name']] = {
+                                'sock':s,
+                                'wan':info['wan'],
+                                'lan':info['lan'],
+                                'port':info['port']
+                            }
                             self.send(s, 'set down')
+                        #如果使用者請求連結到某個server
                         elif mode == 'connect':
                             info = re.match(
                                 '(?P<mode>[^:,]+):(?P<name>[^:,]+),(?P<wan>[^:,]+),(?P<lan>[^:,]+),(?P<port>[^:,]+)',
                                 data).groupdict()
                             print('connect to %s' % info['name'])
-                            for i in self.ip_list:
-                                if i['name'] == room:
-                                    self.send(s,','.join([i['wan'], i['lan'], i['port']]))
-                                    break
-                            else:
-                                self.send(s,'None')
-
+                            try:
+                                target = self.ip_list[info['name']]['sock']
+                                ms = 'connect:'+','.join([info['wan'], info['lan'], info['port']])
+                                self.send(target, ms)
+                            except KeyError:
+                                self.send(s, 'error')
+                                print('error: 沒有此聊天室')
                     #沒訊息，關閉連接
                     else:
                         print('close')

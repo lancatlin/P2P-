@@ -6,19 +6,20 @@ from multiprocessing import Process
 import threading
 from random import randint
 import queue
+import select
 
 class network:
     def __init__(self, info, c):
-        self.room,self.name = info[0],info[1]
+        self.room, self.name = info['room'], info['name']
         self.massege = ('my name is ' + self.name + ' in room:' + self.room).encode()
         self.to_print = queue.Queue()
         self.data = c
         self.lan = self.get_LAN()
-        self.port = randint(50000,60000)
+        self.port = randint(50000, 60000)
         self.wan = ipgetter.myip()
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind((self.lan,self.port))
+        self.socket.bind((self.lan, self.port))
 
     def get_LAN(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -51,8 +52,9 @@ class network:
     def receive(self,sock):
         try:
             data = sock.recv(1024)
+            print(data)
             data = data.decode()
-            if data in ['exit','']:
+            if data in ['exit', '']:
                 print('結束連線' + str(sock))
                 sock.close()
                 return 'close'
@@ -67,11 +69,15 @@ class network:
         except OSError:
             sock.close()
             print('套接字以斷開連線'+str(sock))
+
+
 class Server(network):
     def __init__(self, info, c):
         super().__init__(info, c)
         print('I am server')
-        self.target = []
+        self.inputs = []
+        self.output = []
+        self.msg = {}
         self.data.set(self.room, self.wan, self.lan, self.port)
         Process(target=self.data.wait_connect).start()
         self.socket.listen(5)
@@ -80,50 +86,57 @@ class Server(network):
         udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         udp.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         udp.bind((self.lan, self.port))
-        self.socket.settimeout(10)
+        timeout = 10
         self.to_print.put('創建聊天室')
         while True:
-            try:
-                new, addr = self.socket.accept()
-                print(str(addr)+'已連接')
-                thread = threading.Thread(target=self.receive,args=(new,))
-                thread.start()
-                self.target.append(new)
-            except socket.timeout:
+            read, write, error = select.select(self.inputs, self.output, self.inputs, timeout)
+            if not (read or write or error):
                 try:
                     addr = self.data.info.get(False)
                     addr = self.get_target(addr)
                     udp.sendto(self.massege, addr)
                 except queue.Empty:
                     print('尚未有新連線')
-
-    def receive(self,target):
-        self.socket.settimeout(10)
-        self.send(self.name+'加入聊天室',1)
-        while True:
-            mode = super().receive(target)
-            if not mode:
-                self.target.remove(target)
-                break
-            elif mode is not None:
-                self.to_print.put(mode)
-                self.send(mode, 2, target)
+            for s in read:
+                if s is self.socket:
+                    new, addr = self.socket.accept()
+                    print(str(addr) + '已連接')
+                    self.inputs.append(new)
+                else:
+                    msg = s.recv(1024)
+                    if msg: #有內容就印出
+                        msg = msg.decode()
+                        print(msg)
+                    else:   #沒有內容，移除連線
+                        self.inputs.remove(s)
+                        s.close()
+            for s in write:
+                try:
+                    msg = self.msg[s].get(False)
+                    s.send(msg.encode())
+                    self.output.remove(s)
+                except queue.Empty:
+                    print('沒東西要寄出'+str(s))
+                except socket.error as e:
+                    print(e)
 
     def close(self):
-        self.send('聊天室關閉',1)
+        self.send('聊天室關閉', 1)
         self.send('exit', 2)
-        for i in self.target:
+        for i in self.inputs:
             i.close()
+            self.inputs.remove(i)
         super().close()
 
     def send(self, s, mode=0, one=None):
         data = super().send(s, mode)
-        for i in self.target:
-            if i != one:
-                try:
-                    i.send(data)
-                except OSError:
-                    print('套接字無連接')
+        if one:
+            self.msg[one].put(data)
+            self.output.append(one)
+        else:
+            for i in self.msg.keys():
+                self.msg[i].put(data)
+                self.output.append(i)
 
 
 class Client(network):
@@ -159,7 +172,8 @@ class Client(network):
                 self.to_print.put(result)
 
     def send(self, s, mode=0, one=None):
-        data = super().send(s,mode)
+        data = super().send(s, mode)
+        print(data)
         try:
             self.socket.send(data)
         except OSError:
@@ -169,7 +183,7 @@ class Client(network):
 
 def begin(info):
     c = connect.Connect()
-    mode = c.search(info[0])
+    mode = c.search(info['room'])
     print('I am begin, the mode is' + str(mode))
     if mode is None:
         return Server(info, c)

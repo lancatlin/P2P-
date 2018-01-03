@@ -1,12 +1,14 @@
 import socket
 import re
 import queue
+import json
 
 
 class Connect:
     def __init__(self):
+        setting = json.load(open('/home/lancat/文件/P2P-/setting.json', 'r'))
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect(('127.0.0.1', 55559))
+        self.socket.connect((setting['ip'], setting['port']))
         self.info = queue.Queue()
 
     def search(self, room):

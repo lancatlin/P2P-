@@ -2,6 +2,7 @@ from user import connect
 import socket
 import time
 import window
+import json
 from Server import network
 from user import netWork
 from random import randint
@@ -31,20 +32,21 @@ class Test:
         Process(target=s.start).start()
 
     def client(self, port):
-        server = netWork.begin(('room', str(randint(1, 10))), port)
+        server = netWork.begin(('room', str(randint(1, 10))))
         Process(target=server.start).start()
         print('new Process')
         time.sleep(4)
 
     def test_begin(self, name):
-        info = 'testroom2', name
-        self.window = window.window(info)
+        setting = json.load(open('/home/lancat/文件/P2P-/setting.json', 'r'))
+        setting['name'] = name
+        root = window.window(setting)
         print('準備連接中')
-        self.net = netWork.begin(info)
-        self.window.setIp(self.net)
-        main = Process(target=self.net.start)
+        net = netWork.begin(setting)
+        root.setIp(net)
+        main = Process(target=net.start)
         main.start()
-        self.window.mainloop()
+        root.mainloop()
 
 
 t = Test()

@@ -2,12 +2,14 @@ import socket
 import select
 import queue
 import re
+import json
 
 
 class ServerNet:
     def __init__(self, port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        address = ('127.0.0.1', port)
+        setting = json.load(open('/home/lancat/文件/P2P-/setting.json', 'r'))
+        address = (setting['ip'], setting['port'])
         self.socket.bind(address)
         self.socket.listen(5)
         self.ip_list = {}

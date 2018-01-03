@@ -43,3 +43,7 @@ class Connect:
             '(?P<mode>[^:,]+):(?P<wan>[^:,]+),(?P<lan>[^:,]+),(?P<port>[^:,]+)', string).groupdict()
         print(info)
         return info
+
+    def remove(self, room):
+        msg = 'del:%s' % room
+        self.socket.send(msg.encode())

@@ -78,6 +78,9 @@ class ServerNet:
                             except KeyError:
                                 self.send(s, 'error')
                                 print('error: 沒有此聊天室')
+                        elif mode == 'del':
+                            info = data.split(':')[1]
+                            self.ip_list.pop(info, None)
                     #沒訊息，關閉連接
                     else:
                         print('close')

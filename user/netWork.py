@@ -13,6 +13,9 @@ class network:
         self.room, self.name = info['room'], info['name']
         self.massege = ('my name is ' + self.name + ' in room:' + self.room).encode()
         self.to_print = queue.Queue()
+
+        self.to_print.put('test')
+
         self.data = c
         self.lan = self.get_LAN()
         self.port = randint(50000, 60000)
@@ -48,27 +51,6 @@ class network:
             return info['lan'], int(info['port'])
         else:
             return info['wan'], int(info['port'])
-
-    def receive(self,sock):
-        try:
-            data = sock.recv(1024)
-            print(data)
-            data = data.decode()
-            if data in ['exit', '']:
-                print('結束連線' + str(sock))
-                sock.close()
-                return 'close'
-            elif data[0] == '@':
-                return data
-            else:
-                print(data)
-        except socket.timeout:
-            sock.close()
-            print('因超時而結束連線'+str(sock))
-            return 'close'
-        except OSError:
-            sock.close()
-            print('套接字以斷開連線'+str(sock))
 
 
 class Server(network):
@@ -121,11 +103,7 @@ class Server(network):
                     print(e)
 
     def close(self):
-        self.send('聊天室關閉', 1)
-        self.send('exit', 2)
-        for i in self.inputs:
-            i.close()
-            self.inputs.remove(i)
+        self.data.remove(self.room)
         super().close()
 
     def send(self, s, mode=0, one=None):
@@ -153,7 +131,7 @@ class Client(network):
             except socket.timeout:
                 self.data.connect(self.room, self.wan, self.lan, self.port)
                 print('嘗試連接到', target)
-        self.receive(self.socket)
+        self.receive()
 
     def close(self):
         self.send(self.name + '離開聊天室', 1)
@@ -161,15 +139,15 @@ class Client(network):
         self.socket.close()
         super().close()
 
-    def receive(self,sock):
-        sock.settimeout(60)
+    def receive(self):
+        self.socket.settimeout(60)
         while True:
-            result = super().receive(sock)
-            if result == 'close':
-                print('break')
-                break
-            elif result is not None:
-                self.to_print.put(result)
+            result = self.socket.recv(1024)
+            result = result.decode()
+            if result:
+                print(result)
+            else:
+                self.socket.close()
 
     def send(self, s, mode=0, one=None):
         data = super().send(s, mode)

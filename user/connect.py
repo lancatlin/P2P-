@@ -6,7 +6,7 @@ import queue
 class Connect:
     def __init__(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect(('127.0.0.1', 55558))
+        self.socket.connect(('127.0.0.1', 55559))
         self.info = queue.Queue()
 
     def search(self, room):

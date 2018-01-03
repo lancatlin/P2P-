@@ -70,6 +70,7 @@ class network:
 class Server(network):
     def __init__(self, info, c):
         super().__init__(info, c)
+        print('I am server')
         self.target = []
         self.data.set(self.room, self.wan, self.lan, self.port)
         Process(target=self.data.wait_connect).start()
@@ -169,6 +170,7 @@ class Client(network):
 def begin(info):
     c = connect.Connect()
     mode = c.search(info[0])
+    print('I am begin, the mode is' + str(mode))
     if mode is None:
         return Server(info, c)
     else:

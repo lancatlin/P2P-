@@ -26,7 +26,7 @@ class Test:
         s.close()
 
     def test_run(self):
-        port = 55558
+        port = 55559
         s = network.ServerNet(port)
         Process(target=s.start).start()
 
@@ -37,7 +37,7 @@ class Test:
         time.sleep(4)
 
     def test_begin(self, name):
-        info = 'room', name
+        info = 'testroom2', name
         self.window = window.window(info)
         print('準備連接中')
         self.net = netWork.begin(info)
@@ -48,6 +48,6 @@ class Test:
 
 
 t = Test()
-Process(target=t.test_run).start()
 Process(target=t.test_begin, args = ('server', )).start()
+time.sleep(5)
 t.test_begin('client')

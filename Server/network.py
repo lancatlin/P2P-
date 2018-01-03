@@ -100,5 +100,5 @@ class ServerNet:
 
 
 if __name__ == '__main__':
-    server = ServerNet()
+    server = ServerNet(55559)
     server.start()

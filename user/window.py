@@ -50,14 +50,19 @@ class window(Tk):
 
     def setIp(self, n):                  #設定self.net，將離開的函數指派給net.close
         self.net = n
-        self.protocol("WM_DELETE_WINDOW", self.net.close)
-        self._print_('已連接')
+        self.protocol("WM_DELETE_WINDOW", self.close)
+
     def enter(self):
         self.net.send(self.inputentry.get())
         self.inputentry.delete(0, END)
-    def _print_(self,s):
+
+    def close(self):
+        self.destroy()
+
+    def _print_(self, s):
         print(s)
         self.info.set(s)
+
     def add_new(self):
         try:
             s = self.net.to_print.get(False)
@@ -70,6 +75,7 @@ class window(Tk):
             self.record.write()
         except queue.Empty:
             pass
+
     def mainloop(self, n=0):
         while True:
             self.add_new()

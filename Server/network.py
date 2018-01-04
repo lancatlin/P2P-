@@ -81,6 +81,7 @@ class ServerNet:
                         elif mode == 'del':
                             info = data.split(':')[1]
                             self.ip_list.pop(info, None)
+                            print('%s is been del' % info)
                     #沒訊息，關閉連接
                     else:
                         print('close')

@@ -71,7 +71,6 @@ class window(Tk):
                 s = s[1::]
             self.talktext.insert(END, '\n' + s)
             self.talktext.see(END)
-            print(s)
             #self.record.write()    先不要寫紀錄
         except queue.Empty:
             pass
@@ -79,5 +78,5 @@ class window(Tk):
     def mainloop(self, n=0):
         while True:
             self.add_new()
-            super().update_idletasks()
-            super().update()
+            self.update_idletasks()
+            self.update()

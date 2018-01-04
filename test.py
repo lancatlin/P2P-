@@ -3,6 +3,7 @@ import socket
 import time
 import window
 import json
+from threading import Thread
 from Server import network
 from user import netWork
 from random import randint
@@ -44,7 +45,8 @@ class Test:
         print('準備連接中')
         net = netWork.begin(setting)
         root.setIp(net)
-        main = Process(target=net.start)
+        main = Thread(target=net.start)
+        main.setDaemon(True)
         main.start()
         root.mainloop()
 

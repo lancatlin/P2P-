@@ -157,7 +157,6 @@ class Client(network):
 
     def send(self, s, mode=0, one=None):
         data = super().send(s, mode)
-        print(data)
         try:
             self.socket.send(data)
         except OSError:

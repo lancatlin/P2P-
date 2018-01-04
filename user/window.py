@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from tkinter import *
-import sound
+#import sound
 import queue
 from user import record
 
@@ -10,7 +10,7 @@ class window(Tk):
         super().__init__()
         self.title('P2P Talking')
         self.geometry('350x700')
-        self.sound = sound.player()
+        #self.sound = sound.player()
         rows = 1
         
         ft = lambda s:('微軟正黑體', s)   #設定字體，傳入size，回傳一個tuple

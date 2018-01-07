@@ -7,15 +7,17 @@ class start(Tk):
     def __init__(self):
         super().__init__()
         self.title('P2P 聊天程式')
-        self.geometry('450x220')
+        self.geometry('500x250')
         ft = lambda s: ('微軟正黑體',s)
         rows = 0
 
         f1 = Frame(self)
         f1.grid(row=rows, columnspan=5, sticky=W, pady=8, padx=5)
-        Label(f1, text='聊天室:', width=6,font=ft(18)).grid(row=rows, sticky=W)
+        Label(f1, text='聊天室:', width=6,font=ft(18)).grid(row=0, sticky=W)
         self.roomentry = Entry(f1, width=15,font=ft(18))
-        self.roomentry.grid(row=rows, column=1)
+        self.roomentry.grid(row=0, column=1)
+        self.isroom = BooleanVar()
+        Checkbutton(f1, text='Server', variable=self.isroom, font=ft(15)).grid(row=1, column=0)
         rows += 1
 
         f2 = Frame(self)
@@ -33,13 +35,12 @@ class start(Tk):
         self.mainloop()
 
     def begin(self):
-        info = self.roomentry.get(), self.nameentry.get()
+        info = {'room':self.roomentry.get(), 'name':self.nameentry.get(), 'isS':self.isroom.get()}
         self.window = window.window(info)
         self._print_('準備連接：'+self.roomentry.get()+'中...')
-        self.net = netWork.begin(self.window, info)
+        self.net = netWork.begin(info)
         self.window.setIp(self.net)
         main = threading.Thread(target=self.net.start)
-        self._print_('已連接')
         main.setDaemon(True)
         main.start()
         self.destroy()
